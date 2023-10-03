@@ -1,0 +1,7 @@
+label {
+    color : red
+}
+
+circleButton {
+    --button-background-color: rgb(42, 108, 165);
+}

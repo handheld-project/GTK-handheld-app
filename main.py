@@ -21,7 +21,7 @@ class MultiPageApp(Gtk.Window):
 
         self.notebook.append_page(self.page1, Gtk.Label("Page 1"))
         self.notebook.append_page(self.page2, Gtk.Label("Page 2"))
-        self.notebook.append_page(self.page3, Gtk.Label("Page 3_CameraApp"))
+        self.notebook.append_page(self.page3, Gtk.Label("Page 3"))
 
     def run(self):
         self.show_all()
