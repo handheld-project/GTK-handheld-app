@@ -1,7 +1,23 @@
-label {
-    color : red
+.label {
+    color: red;
+    font-size: 20px;
 }
 
-circleButton {
-    --button-background-color: rgb(42, 108, 165);
+.grid {
+    background-color: rgb(116, 116, 116);
+}
+
+.video {
+    background-color: rgb(36, 36, 36);
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.BoxCantainer {
+    margin-right: 10px;
+    padding : 10px ;
+}
+
+.innerBoxButtonContainer {
+    margin-right: 10px;
 }

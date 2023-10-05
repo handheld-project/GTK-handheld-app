@@ -9,7 +9,7 @@ from views.page3 import CameraApp
 class MultiPageApp(Gtk.Window):
     def __init__(self):
         super().__init__(title="Multi-Page Gtk App")
-        self.set_default_size(400, 300)
+        self.set_default_size(1080, 720)
         self.connect("destroy", Gtk.main_quit)
 
         self.notebook = Gtk.Notebook()

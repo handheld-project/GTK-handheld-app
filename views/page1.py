@@ -13,45 +13,71 @@ class Page1(Gtk.Box):
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
 
+        # Video/Image Init 
         self.capture = cv2.VideoCapture(0) 
-        self.image = Gtk.Image()
+        self.video = Gtk.Image()
         self.timer = GLib.timeout_add(60, self.update_image)
-        
+        self.video.set_size_request(900, 700)
+
         # label init
         self.label1 = Gtk.Label(label="ถ่ายรูปป้ายโฆษณา ภายในระยะห่างจากป้าย xx เมตร ")
         self.label1.get_style_context().add_class("label")
+        self.label1.set_valign(Gtk.Align.CENTER)
+        self.label1.set_halign(Gtk.Align.CENTER)
 
         # button init
+            #Container 
+        self.boxButtonContainer = Gtk.Box() 
+        self.boxButtonContainer.set_valign(Gtk.Align.CENTER)
+        self.boxButtonContainer.set_halign(Gtk.Align.CENTER)
+
+            #Container inner 
+        self.innerBoxButtonContainer = Gtk.Box() 
+        self.innerBoxButtonContainer.set_valign(Gtk.Align.CENTER)
+        self.innerBoxButtonContainer.set_halign(Gtk.Align.CENTER)
+
         self.button = CircularButton(self.capture)
-    
-        self.load_css("./styles/page1.style.css")
+        self.innerButton = InnerCircularButton(self.capture)
 
-        # Create a grid to hold the label, image, and button
-        grid = Gtk.Grid()
-        grid.set_column_spacing(10)
-        grid.attach(self.label1, 0, 0, 1, 1)
-        grid.attach(self.image, 0, 1, 1, 1)
-        grid.attach(self.button, 1, 0, 1, 2)
-        grid.get_style_context().add_class("grid")  # Add a CSS class to the grid for styling
+        self.boxButtonContainer.add(self.button)        
+        self.innerBoxButtonContainer.add(self.innerButton)        
+
+        # Grid init
+        self.grid = Gtk.Grid()
+        self.grid.set_valign(Gtk.Align.CENTER)
+        self.grid.set_halign(Gtk.Align.CENTER)
+
+        self.grid.attach(self.label1, 0, 0, 2, 1)
+        self.grid.attach(self.video, 0, 1, 1, 1)
+        self.grid.attach(self.innerBoxButtonContainer, 1, 0, 1, 2)      
+        self.grid.attach(self.boxButtonContainer, 1, 0, 1, 2)      
+
         
-        self.add(grid)
+        # style setting 
+        self.style_provider = Gtk.CssProvider()
+        self.style_provider.load_from_path("./styles/page1.style.css")
 
-    def load_css(self, filename):
-        # Create a CSS provider
-        provider = Gtk.CssProvider()
+        contextLabel1 = self.label1.get_style_context()
+        contextGrid = self.grid.get_style_context()
+        contextVideo = self.video.get_style_context()        
+        contextBoxButtonContainer = self.boxButtonContainer.get_style_context()      
+        contextInnerBoxButtonContainer = self.innerBoxButtonContainer.get_style_context()      
 
-        # Load CSS styles from the file
-        try:
-            provider.load_from_path(filename)
-        except Exception as e:
-            print(f"Error loading CSS from '{filename}': {e}")
-            return
+        self.label1.get_style_context().add_class("label")
+        self.grid.get_style_context().add_class("grid")  # Add a CSS class to the grid for styling
+        self.video.get_style_context().add_class("video")  # Add a CSS class to the grid for styling
+        self.boxButtonContainer.get_style_context().add_class("BoxCantainer")  # Add a CSS class to the grid for styling
+        self.innerBoxButtonContainer.get_style_context().add_class("innerBoxButtonContainer")  # Add a CSS class to the grid for styling
+        
+        contextLabel1.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        contextGrid.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        contextVideo.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        contextBoxButtonContainer.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        contextInnerBoxButtonContainer.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        # Apply the CSS style to the label
-        context = self.label1.get_style_context()
-        context.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.add(self.grid)
+        
   
-
     def update_image(self):
         ret, frame = self.capture.read()
         if ret:
@@ -69,7 +95,7 @@ class Page1(Gtk.Box):
             )
 
             # Update the GTK Image widget with the new image
-            self.image.set_from_pixbuf(gdk_pixbuf)
+            self.video.set_from_pixbuf(gdk_pixbuf)
 
         return True
 
@@ -82,8 +108,9 @@ class CircularButton(Gtk.EventBox):
         # Create a circular area
         circular_area = Gtk.DrawingArea()
         circular_area.set_size_request(100, 100)
+
         circular_area.connect("draw", self.on_draw)
-        self.connect("button-press-event", self.on_button_press)
+
         self.add(circular_area)
 
     def on_draw(self, widget, context):
@@ -98,7 +125,36 @@ class CircularButton(Gtk.EventBox):
         context.arc(center_x, center_y, radius, 0, 2 * 3.141592)
         context.fill()
 
+class InnerCircularButton(Gtk.EventBox):
+    def __init__(self,capture):
+        super().__init__()
+        self.capture = capture
+
+        inner_circular_area = Gtk.DrawingArea() 
+        inner_circular_area.set_size_request(80, 80)
+
+        inner_circular_area.connect("draw", self.on_draw_inner)
+        inner_circular_area.set_valign(Gtk.Align.CENTER)
+        inner_circular_area.set_halign(Gtk.Align.CENTER)
+
+        self.connect("button-press-event", self.on_button_press)
+        self.add(inner_circular_area)
+
+
+    def on_draw_inner(self, widget, context):
+        # Draw a circle on the button
+        allocation = widget.get_allocation()
+        radius = min(allocation.width, allocation.height) / 2
+        center_x = allocation.width / 2
+        center_y = allocation.height / 2
+
+        context.set_source_rgb(0.7, 0.7, 0.7)  
+
+        context.arc(center_x, center_y, radius, 0, 2 * 3.141592)
+        context.fill()
+
     def on_button_press(self, widget, event):
+        print("method from innter button")
         ret, frame = self.capture.read()
         if ret:
             # Generate a filename based on the current date and time
