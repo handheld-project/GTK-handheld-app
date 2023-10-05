@@ -4,6 +4,9 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 import cv2
 import numpy as np
 from PIL import Image
+import tempfile
+import os
+import datetime
 
 class Page1(Gtk.Box):
 
@@ -19,13 +22,19 @@ class Page1(Gtk.Box):
         self.label1.get_style_context().add_class("label")
 
         # button init
-        self.button = CircularButton()
+        self.button = CircularButton(self.capture)
     
         self.load_css("./styles/page1.style.css")
-      
-        self.add(self.label1)
-        self.add(self.image)
-        self.add(self.button)
+
+        # Create a grid to hold the label, image, and button
+        grid = Gtk.Grid()
+        grid.set_column_spacing(10)
+        grid.attach(self.label1, 0, 0, 1, 1)
+        grid.attach(self.image, 0, 1, 1, 1)
+        grid.attach(self.button, 1, 0, 1, 2)
+        grid.get_style_context().add_class("grid")  # Add a CSS class to the grid for styling
+        
+        self.add(grid)
 
     def load_css(self, filename):
         # Create a CSS provider
@@ -63,17 +72,13 @@ class Page1(Gtk.Box):
             self.image.set_from_pixbuf(gdk_pixbuf)
 
         return True
-    
-    def on_button_click(self,widget):
-        print("clicked")
-    
-
 
 
 class CircularButton(Gtk.EventBox):
-    def __init__(self):
+    def __init__(self,capture):
         super().__init__()
-
+        self.capture = capture
+        
         # Create a circular area
         circular_area = Gtk.DrawingArea()
         circular_area.set_size_request(100, 100)
@@ -94,6 +99,14 @@ class CircularButton(Gtk.EventBox):
         context.fill()
 
     def on_button_press(self, widget, event):
-        if event.type == Gdk.EventType.BUTTON_PRESS and event.button == 1:
-            # Handle left mouse button click here
-            print("Button clicked")
+        ret, frame = self.capture.read()
+        if ret:
+            # Generate a filename based on the current date and time
+            current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            temp_filename = f"./temp/{current_datetime}.png"  # Specify the path to the 'temp' folder
+
+            # Save the captured frame as a PNG image
+            cv2.imwrite(temp_filename, frame)
+
+            print(f"Image saved to: {temp_filename}")
+            print(current_datetime)
