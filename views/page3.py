@@ -9,5 +9,6 @@ from PIL import Image
 class CameraApp(Gtk.Box):
     def __init__(self):
         super().__init__()
-        self.image = Gtk.Image()
+
+
         
