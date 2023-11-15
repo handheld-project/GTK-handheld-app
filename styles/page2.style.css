@@ -1,0 +1,41 @@
+.image {
+    background-color: rgb(129, 13, 13);
+    margin-left: 25px;
+}
+
+.boxTopContent {
+    margin-bottom : 50px ;
+}
+
+label {
+    
+} 
+
+.gridContentWrapper {
+    background-color: rgb(28,28,28); 
+    padding-left: 26px;
+    padding-right: 26px;
+}
+
+.boxTopContent {
+    background-color: rgb(197, 197, 197);
+    border-radius: 15px;
+    padding: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+}
+
+.boxBottomContent{
+    background-color: rgb(197, 197, 197);
+    border-radius: 15px;
+    padding: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.calculatedWidth{
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+
+}

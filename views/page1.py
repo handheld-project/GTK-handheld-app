@@ -10,7 +10,7 @@ import datetime
 import threading
 import time
 
-class Page1(Gtk.Box):
+class Page1(Gtk.Grid):
 
     def __init__(self,stack):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -29,7 +29,7 @@ class Page1(Gtk.Box):
         self.capture = cv2.VideoCapture(0) 
         self.video = Gtk.Image()
         self.timer = GLib.timeout_add(60, self.update_image)
-        self.video.set_size_request(900, 700)
+        self.video.set_size_request(850, 600)
 
         # label init
             #container 
@@ -115,11 +115,6 @@ class Page1(Gtk.Box):
             self.video.set_from_pixbuf(gdk_pixbuf)
 
         return True
-    
-    
-
-
-
 
 class CircularButton(Gtk.EventBox):
     def __init__(self,capture , stack):

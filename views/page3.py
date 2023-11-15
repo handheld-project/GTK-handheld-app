@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-class CameraApp(Gtk.Box):
+class CameraApp(Gtk.Grid):
     def __init__(self):
         super().__init__()
 

@@ -11,11 +11,10 @@
 } 
 
 .gridPage {
-    background-color: rgb(201, 201, 201);
     padding-bottom: 35px;
 }
 .video {
-    /* background-color: rgb(129, 13, 13); */
+    background-color: rgb(129, 13, 13);
     margin-left: 25px;
 }
 
