@@ -27,8 +27,10 @@ class Page1(Gtk.Grid):
 
         # Video/Image Init 
         self.capture = cv2.VideoCapture(0) 
+        # self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # Set width to 640 pixels
+        # self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # Set height to 480 pixels
         self.video = Gtk.Image()
-        self.timer = GLib.timeout_add(60, self.update_image)
+        self.timer = GLib.timeout_add(50, self.update_image)
         self.video.set_size_request(850, 600)
 
         # label init
@@ -92,20 +94,27 @@ class Page1(Gtk.Grid):
 
         self.main_box.pack_start( self.gridPage, True, True, 0)
         self.add(self.main_box)
-        
-  
+    
     def update_image(self):
+        
         ret, frame = self.capture.read()
+    
         if ret:
             # Convert the OpenCV image (BGR format) to RGB using NumPy
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            
+
+            # Calculate the height to maintain 4:3 aspect ratio with width close to 850 pixels
+            target_width = 850
+            target_height = int((target_width / frame_rgb.shape[1]) * frame_rgb.shape[0])
+
+            # Resize the image while maintaining the aspect ratio
+            resized_frame = cv2.resize(frame_rgb, (target_width, target_height))
+
             # Convert to a format suitable for GdkPixbuf
-            image = Image.fromarray(frame_rgb)
-            image = image.transpose(Image.FLIP_LEFT_RIGHT)  # Optionally flip the image horizontally
+            image = Image.fromarray(resized_frame)
+            
 
-
-            # Create the GdkPixbuf from the PIL image
+            # Create the GdkPixbuf from the PIL image with the desired size
             image_bytes = bytes(image.tobytes())
             gdk_pixbuf = GdkPixbuf.Pixbuf.new_from_data(
                 image_bytes, GdkPixbuf.Colorspace.RGB, False, 8, image.width, image.height, image.width * 3
@@ -115,9 +124,13 @@ class Page1(Gtk.Grid):
             self.video.set_from_pixbuf(gdk_pixbuf)
 
         return True
+    
+
+    def release_capture(self) :
+        self.capture.release()
 
 class CircularButton(Gtk.EventBox):
-    def __init__(self,capture , stack):
+    def __init__(self, capture , stack):
         super().__init__()
         self.stack = stack
         self.capture = capture
@@ -177,29 +190,42 @@ class CircularButton(Gtk.EventBox):
 
         context.arc(center_x, center_y, radius, 0, 2 * 3.141592)
         context.fill()
+    
 
     def on_button_press(self, widget, event):
+        self.stack.get_child_by_name("page1").release_capture()
+
+        print(f"Setting capture resolution to 1280x720")
+        self.capture = cv2.VideoCapture(0)
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+        print(f"Capture width: {self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)}") 
+        print(f"Capture height: {self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)}")
+
 
         self.clicked = True 
-        
+
         ret, frame = self.capture.read()
         if ret:
-            # Generate a filename based on the current date and time
             current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            temp_filename = f"./temp/{current_datetime}.png"  # Specify the path to the 'temp' folder
-
-            # Save the captured frame as a PNG image
+            temp_filename = f"./temp/{current_datetime}.png"
             cv2.imwrite(temp_filename, frame)
 
             print(f"Image saved to: {temp_filename}")
             print(current_datetime)
-    
+
+        self.capture.release()
         widget.queue_draw()
+
+        # Continue with other processing or thread creation as needed
+        processing_thread = threading.Thread(target=self.process_image)
+        processing_thread.start()
     
     def on_button_release(self, widget , event )  :
         
         self.clicked = False
-        
+                
         print("button released")
         print(self.clicked)
 

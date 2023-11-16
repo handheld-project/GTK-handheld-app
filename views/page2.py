@@ -4,12 +4,22 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 import datetime
 
+# อักษรภาษาไทยทั้งหมด
+# อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น
+# อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย
+
 class Page2(Gtk.Grid):
     def __init__(self , stack ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         
         self.stack = stack
-        
+
+        # type 
+        self.list_store = Gtk.ListStore(str)
+        self.list_store.append(["1.อักษรภาษาไทยทั้งหมด"])
+        self.list_store.append(["2.อักษรภาษาไทยปน กับ \nภาษาต่างประเทศ/ภาพ\n/เครื่องหมายอื่น"])
+        self.list_store.append(["3.อักษาไทยอยู่ต่ำกว่า\nอักษรต่างประเทศ/\nไม่มีอักษรไทยเลย"]) 
+
         # mainbox 
         self.main_box = Gtk.Box()
         
@@ -39,35 +49,61 @@ class Page2(Gtk.Grid):
         self.boxTopContent = Gtk.Box() 
         self.gridTopContent = Gtk.Grid() 
         
-        self.topContentLabel = Gtk.Label(label="ข้อมูลป้าย") 
+        self.topContentLabel = Gtk.Label(label="ข้อมูลป้าย" ) 
+        self.topContentLabel.set_size_request(180 , 40 )
 
-        self.width = Gtk.Label(label="ความกว้าง" ) 
-        self.calculated_width = Gtk.Label(label="ความกว้าง asdasdasd" ) 
+        self.width = Gtk.Label(label="ความกว้าง") 
+        self.width.set_size_request(80 , 40 )
+        self.calculated_width = Gtk.Label(label = "test helowrold")
+        self.calculated_width.set_size_request(180 , 40 )
 
         self.height = Gtk.Label(label="ความสูง") 
+        self.height.set_size_request(80 , 40 )
         self.calculated_height = Gtk.Label()
+        self.calculated_height.set_size_request(180 , 40 )
+
 
         self.area = Gtk.Label(label="พื้นที่")
+        self.area.set_size_request(80 , 40 )
         self.calculated_area = Gtk.Label()
+        self.calculated_area.set_size_request(180 , 40 )
 
         self.type = Gtk.Label(label="ชนิดป้าย") 
-        self.calculated_type = Gtk.Label()
+        self.type.set_size_request(80 , 80 )
+
+        self.calculated_type = Gtk.ComboBox.new_with_model(self.list_store)
+        self.calculated_type.set_size_request(180 , 80 )
+        
+        self.renderer_text = Gtk.CellRendererText()
+        self.calculated_type.pack_start(self.renderer_text, True)
+        self.calculated_type.add_attribute(self.renderer_text, "text", 0)
+
+
+
 
         self.taxPrice = Gtk.Label("ราคาภาษี") 
+        self.taxPrice.set_size_request(80 , 40 )
         self.calculated_taxPrice = Gtk.Label()
-
+        self.calculated_taxPrice.set_size_request(180 , 40 )
 
         # bottom 
         self.boxBottomContent = Gtk.Box() 
         self.gridBottomContent = Gtk.Grid()
-        self.latitude = Gtk.Label(label="ละติจูด") 
+
+        self.latitude = Gtk.Label(label="ละติจูด")
+        self.latitude.set_size_request(80 , 40 ) 
         self.calculated_latitude = Gtk.Label() 
+        self.calculated_latitude.set_size_request(180 , 40 ) 
 
         self.longitude = Gtk.Label(label="ลองจิจูด") 
+        self.longitude.set_size_request(80 , 40 ) 
         self.calculated_longitude  = Gtk.Label() 
+        self.calculated_longitude.set_size_request(180 , 40 ) 
 
         self.time = Gtk.Label(label="เวลา") 
+        self.time.set_size_request(80 , 40 ) 
         self.calculated_time  = Gtk.Label( label = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") ) 
+        self.calculated_time.set_size_request(180 , 40 ) 
          
         # add styling
         
@@ -79,19 +115,45 @@ class Page2(Gtk.Grid):
         self.contextBoxBottomContent = self.boxBottomContent.get_style_context()
         self.contextGridContentWrapper = self.gridContentWrapper.get_style_context()
         self.contextCalculated_width = self.calculated_width.get_style_context()
+        self.contextCalculated_height= self.calculated_height.get_style_context()
+        self.contextCalculated_area = self.calculated_area.get_style_context()
+        self.contextCalculated_taxPrice = self.calculated_taxPrice.get_style_context()
+        self.contextCalculated_type = self.calculated_type.get_style_context()
+
+        self.contextCalulated_latitude = self.calculated_latitude.get_style_context()
+        self.contextCalulated_longitude = self.calculated_longitude.get_style_context()
+        self.contextCalculated_time = self.calculated_time.get_style_context()
    
         self.image.get_style_context().add_class("image")
         self.boxTopContent.get_style_context().add_class("boxTopContent")
         self.boxBottomContent.get_style_context().add_class("boxBottomContent")
         self.gridContentWrapper.get_style_context().add_class("gridContentWrapper")
-        self.calculated_width.get_style_context().add_class("calculatedWidth")
+        self.calculated_width.get_style_context().add_class("calculatedBox")
+        self.calculated_height.get_style_context().add_class("calculatedBox")
+        self.calculated_area.get_style_context().add_class("calculatedBox")
+        self.calculated_taxPrice.get_style_context().add_class("calculatedBox")
+        self.calculated_type.get_style_context().add_class("combo-box")
 
+        self.calculated_latitude.get_style_context().add_class("calculatedBox")
+        self.calculated_longitude.get_style_context().add_class("calculatedBox")
+        self.calculated_time.get_style_context().add_class("calculatedBox")
 
         self.contextImage.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextBoxTopContent.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextBoxBottomContent.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextGridContentWrapper.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextCalculated_width.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextCalculated_height.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextCalculated_area.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextCalculated_taxPrice.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextCalculated_type.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        
+        self.contextCalulated_latitude.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextCalulated_longitude.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextCalculated_time.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+
+
 
         # adding content to page 
         self.boxTopContent.add(self.gridTopContent)
@@ -101,21 +163,47 @@ class Page2(Gtk.Grid):
         self.gridContent.set_valign(Gtk.Align.CENTER)
         self.gridContent.set_halign(Gtk.Align.CENTER)
 
-        self.width.set_halign(Gtk.Align.END)
-        self.width.set_valign(Gtk.Align.END)
-        self.calculated_width.set_halign(Gtk.Align.START)
-        self.calculated_width.set_valign(Gtk.Align.START)
-        
-        self.height.set_halign(Gtk.Align.END)
-        self.height.set_valign(Gtk.Align.END)
-        self.calculated_height.set_halign(Gtk.Align.START)
-        self.calculated_height.set_valign(Gtk.Align.START)
+            # align top content
+        self.width.set_halign(Gtk.Align.START)
+        self.height.set_halign(Gtk.Align.START)
+        self.area.set_halign(Gtk.Align.START)
+        self.type.set_halign(Gtk.Align.START)
+        self.taxPrice.set_halign(Gtk.Align.START)
 
+        # self.width.set_valign(Gtk.Align.START)
+        # self.height.set_valign(Gtk.Align.START)
+        # self.area.set_valign(Gtk.Align.START)
+        # self.type.set_valign(Gtk.Align.START)
+        # self.taxPrice.set_valign(Gtk.Align.START)
+
+        self.calculated_width.set_halign(Gtk.Align.END)
+        self.calculated_height.set_halign(Gtk.Align.END)
+        self.calculated_area.set_halign(Gtk.Align.END)
+        self.calculated_type.set_halign(Gtk.Align.END)
+        self.calculated_taxPrice.set_halign(Gtk.Align.END)
+
+        # self.calculated_width.set_valign(Gtk.Align.END)
+        # self.calculated_height.set_valign(Gtk.Align.END)
+        # self.calculated_area.set_valign(Gtk.Align.END)
+        # self.calculated_type.set_valign(Gtk.Align.END)
+        # self.calculated_taxPrice.set_valign(Gtk.Align.END)
+
+            # align bottom content
+        self.latitude.set_halign(Gtk.Align.START)
+        self.longitude.set_halign(Gtk.Align.START)
+        self.time.set_halign(Gtk.Align.START)
+
+        self.calculated_latitude.set_halign(Gtk.Align.END)
+        self.calculated_latitude.set_halign(Gtk.Align.END)
+        self.calculated_time.set_halign(Gtk.Align.END)
+
+        
         #sizing 
         self.gridTopContent.set_size_request(275,300)
 
         self.gridPage.set_column_homogeneous(True)
-        self.gridTopContent.set_column_homogeneous(True)
+        # self.gridTopContent.set_column_homogeneous(True)
+        # self.gridBottomContent.set_column_homogeneous(True)
 
 
 
@@ -144,7 +232,7 @@ class Page2(Gtk.Grid):
         #  adding bottom conntent
             # left top width heigt 
         self.gridBottomContent.attach(self.latitude , 0 , 0 , 1, 1 ) 
-        self.gridBottomContent.attach(self.calculated_latitude , 0 , 1 , 1 ,1 ) 
+        self.gridBottomContent.attach(self.calculated_latitude , 1 , 0 , 1 ,1 ) 
         self.gridBottomContent.attach(self.longitude , 0 , 1, 1 , 1 ) 
         self.gridBottomContent.attach(self.calculated_longitude , 1, 1 , 1 , 1 ) 
         self.gridBottomContent.attach(self.time , 0, 2 , 1 , 1 ) 

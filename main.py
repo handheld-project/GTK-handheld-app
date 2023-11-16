@@ -42,7 +42,7 @@ class MultiPageApp(Gtk.ApplicationWindow):
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         # Schedule a callback to switch to Page1 after 3 seconds
-        # GLib.timeout_add_seconds(3, self.show_page1)
+        GLib.timeout_add_seconds(3, self.show_page1)
 
     def show_page1(self):
         self.stack.set_visible_child_name("page1")
