@@ -3,23 +3,27 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib
 from views.page1 import Page1
 from views.page2 import Page2
-from views.page3 import CameraApp
+from views.page3 import Page3
 from views.loadingPage import LoadingPage
 from views.splashPage import SplashPage
 
 class MultiPageApp(Gtk.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app)
+
+        self.processing_data = {}
+
         self.set_default_size(1080, 720)
         self.connect("destroy", Gtk.main_quit)
+        
         self.set_resizable(False)
         
         self.stack = Gtk.Stack()
         self.add(self.stack)
 
-        self.page1 = Page1(self.stack)
-        self.page2 = Page2(self.stack)
-        self.page3 = CameraApp()
+        self.page1 = Page1(self,self.stack )
+        self.page2 = Page2(self,self.stack )
+        self.page3 = Page3(self,self.stack)
         self.loadingPage = LoadingPage()
         self.splashPage = SplashPage(self.stack)
  
@@ -43,6 +47,12 @@ class MultiPageApp(Gtk.ApplicationWindow):
 
         # Schedule a callback to switch to Page1 after 3 seconds
         GLib.timeout_add_seconds(3, self.show_page1)
+
+    def set_processing_data(self, processing_data):
+        self.processing_data = processing_data
+
+    def get_processing_data(self):
+        return self.processing_data
 
     def show_page1(self):
         self.stack.set_visible_child_name("page1")

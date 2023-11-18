@@ -6,9 +6,9 @@ import cv2
 import numpy as np
 from PIL import Image
 
-class CameraApp(Gtk.Grid):
-    def __init__(self):
+class Page3(Gtk.Grid):
+    def __init__(self,main_window,stack):
         super().__init__()
-
+        
 
         

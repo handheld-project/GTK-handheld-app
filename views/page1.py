@@ -12,12 +12,13 @@ import time
 
 class Page1(Gtk.Grid):
 
-    def __init__(self,stack):
+    def __init__(self,main_window,stack ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         
         self.stack = stack
+        self.main_window = main_window
+
         # mainbox 
-        self.main_box = Gtk.Box()
 
         # grid page container
         self.gridPage = Gtk.Grid()
@@ -30,8 +31,8 @@ class Page1(Gtk.Grid):
         # self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # Set width to 640 pixels
         # self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # Set height to 480 pixels
         self.video = Gtk.Image()
-        self.timer = GLib.timeout_add(50, self.update_image)
-        self.video.set_size_request(850, 600)
+        self.timer = GLib.timeout_add(100, self.update_image)
+        self.video.set_size_request(800, 600)
 
         # label init
             #container 
@@ -52,7 +53,7 @@ class Page1(Gtk.Grid):
         self.boxButtonContainer.set_valign(Gtk.Align.CENTER)
         self.boxButtonContainer.set_halign(Gtk.Align.CENTER)
 
-        self.button = CircularButton(self.capture , self.stack)
+        self.button = CircularButton(self.capture , self.stack , self.main_window)
         
         self.boxButtonContainer.add(self.button)         
 
@@ -92,9 +93,24 @@ class Page1(Gtk.Grid):
         self.gridPage.attach(self.boxLabelConainter,0,0,1,1)
         self.gridPage.attach(self.grid,0,1,1,1)
 
-        self.main_box.pack_start( self.gridPage, True, True, 0)
-        self.add(self.main_box)
-    
+        self.add(self.gridPage)
+
+        # connect event listen
+        self.set_can_focus(True) 
+        self.connect("key-press-event", self.on_key_press)
+
+    def on_key_press(self, widget, event):
+        # Check the keyval attribute of the event to get the key code
+        keyval = event.keyval
+
+        # Print the key value
+        print(f"Key pressed: {keyval}")
+        
+        # press enter / confrim button 
+        if(keyval == 65293) : 
+            self.button.emit("button-press-event", None)
+        return True
+
     def update_image(self):
         
         ret, frame = self.capture.read()
@@ -104,11 +120,9 @@ class Page1(Gtk.Grid):
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
             # Calculate the height to maintain 4:3 aspect ratio with width close to 850 pixels
-            target_width = 850
-            target_height = int((target_width / frame_rgb.shape[1]) * frame_rgb.shape[0])
 
             # Resize the image while maintaining the aspect ratio
-            resized_frame = cv2.resize(frame_rgb, (target_width, target_height))
+            resized_frame = cv2.resize(frame_rgb, (728, 546))
 
             # Convert to a format suitable for GdkPixbuf
             image = Image.fromarray(resized_frame)
@@ -125,17 +139,20 @@ class Page1(Gtk.Grid):
 
         return True
     
-
     def release_capture(self) :
         self.capture.release()
 
 class CircularButton(Gtk.EventBox):
-    def __init__(self, capture , stack):
+    def __init__(self, capture , stack , main_window):
         super().__init__()
+
         self.stack = stack
+        self.main_window = main_window
+        self.export_data={}
+        self.stop_event = threading.Event() 
         self.capture = capture
         self.clicked = False
-
+        
         self.grid = Gtk.Grid()
 
         self.circular_area = Gtk.DrawingArea() 
@@ -203,13 +220,13 @@ class CircularButton(Gtk.EventBox):
         print(f"Capture width: {self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)}") 
         print(f"Capture height: {self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)}")
 
-
         self.clicked = True 
 
         ret, frame = self.capture.read()
         if ret:
             current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             temp_filename = f"./temp/{current_datetime}.png"
+            self.export_data['src_image'] = temp_filename
             cv2.imwrite(temp_filename, frame)
 
             print(f"Image saved to: {temp_filename}")
@@ -221,28 +238,30 @@ class CircularButton(Gtk.EventBox):
         # Continue with other processing or thread creation as needed
         processing_thread = threading.Thread(target=self.process_image)
         processing_thread.start()
-    
+
     def on_button_release(self, widget , event )  :
-        
         self.clicked = False
-                
-        print("button released")
-        print(self.clicked)
-
         widget.queue_draw()
-
+        # Set the loading page visible after the processing thread completes
+        GLib.idle_add(self.show_loading_page)
+    
+    def show_loading_page(self):
         self.stack.set_visible_child_name("loadingPage")
-        # Start the image processing in a separate thread
-        processing_thread = threading.Thread(target = self.process_image )
-        processing_thread.start()
+        return False  # Stop the idle callback
 
     # image processing flow 
 
     def process_image(self):
         # Simulate image processing (replace this with your actual processing logic)
+        print("process_image_start")
         time.sleep(3)  # Simulate 3 seconds of processing
         # Switch to Page 2 after processing is complete
         GLib.idle_add(self.switch_to_page) 
+        print("process_image_stop")
         
+        self.main_window.set_processing_data(self.export_data)
+        self.stop_event.set()
+        
+
     def switch_to_page(self):
         self.stack.set_visible_child_name("page2")

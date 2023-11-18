@@ -3,12 +3,9 @@
     margin-left: 25px;
 }
 
-.boxTopContent {
-    margin-bottom : 50px ;
-}
-
-label {
-    
+.labelName{
+    margin-top: 10px;
+    font-size: 18px;
 } 
 
 .gridContentWrapper {
@@ -21,9 +18,9 @@ label {
     background-color: rgb(197, 197, 197);
     border-radius: 15px;
     padding: 10px;
+    margin-bottom : 30px ;
     margin-left: 10px;
     margin-right: 10px;
-
 }
 
 .boxBottomContent{
@@ -36,7 +33,7 @@ label {
 
 .calculatedBox{
     background-color: rgb(255, 255, 255);
-    border-radius: 10px;
+    border-radius: 5px;
     margin-top: 10px;
     margin-left: 5px;
 }
@@ -47,3 +44,4 @@ label {
     margin-left: 5px;
 
 }
+
