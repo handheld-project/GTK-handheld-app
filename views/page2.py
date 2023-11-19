@@ -17,6 +17,10 @@ class Page2(Gtk.Grid):
         self.main_window = main_window
         self.filename = ""
         self.stack.connect("notify::visible-child-name", self.on_stack_visible_child_changed)
+        
+        # control variable 
+        self.current_entity = 0
+        self.is_cancel = None 
 
         # type 
         self.list_store = Gtk.ListStore(str)
@@ -34,15 +38,13 @@ class Page2(Gtk.Grid):
         self.gridContentWrapper = Gtk.Grid() 
 
         # labelPage
-        self.pageLabel = Gtk.Label(label="ถ่ายรูปป้ายโฆษณา ภายในระยะห่างจากป้าย xx เมตร ")
-
         self.label = Gtk.Label(label="ผลลัพธ์การตรวจจับป้ายโฆษณา")
 
         # Image
             #Container
         self.boxImage = Gtk.Box() 
         self.image = Gtk.Image() 
-        self.image.set_size_request(728, 546)
+        self.image.set_size_request(720, 405)
 
         # Calculated Content 
         self.gridContent = Gtk.Grid()
@@ -54,25 +56,35 @@ class Page2(Gtk.Grid):
         self.topContentLabel = Gtk.Label(label="ข้อมูลป้าย" ) 
         self.topContentLabel.set_size_request(180 , 40 )
 
+        self.adjustment = Gtk.Adjustment(0, 0, 100, 0.1, 10, 0)
+
         self.width = Gtk.Label(label="ความกว้าง") 
         self.width.set_size_request(80 , 40 )
-        self.calculated_width = Gtk.Label(label = "test helowrold")
-        self.calculated_width.set_size_request(200 , 40 )
+
+        self.calculated_width = Gtk.SpinButton()
+        self.calculated_width.set_size_request(205 , 40 )
+        self.calculated_width.set_adjustment(self.adjustment)
+        self.calculated_width.set_digits(2)  
+        self.calculated_width.set_numeric(True)
 
         self.height = Gtk.Label(label="ความสูง") 
         self.height.set_size_request(80 , 40 )
-        self.calculated_height = Gtk.Label()
-        self.calculated_height.set_size_request(200 , 40 )
+
+        self.calculated_height = Gtk.SpinButton()
+        self.calculated_height.set_size_request(205 , 40 )
+        self.calculated_height.set_adjustment(self.adjustment)
+        self.calculated_height.set_digits(2)  
+        self.calculated_height.set_numeric(True)
+
 
 
         self.area = Gtk.Label(label="พื้นที่")
         self.area.set_size_request(80 , 40 )
-        self.calculated_area = Gtk.Label()
-        self.calculated_area.set_size_request(200 , 40 )
+        self.calculated_area = Gtk.Entry()
+        self.calculated_area.set_size_request(205 , 40 )
 
         self.type = Gtk.Label(label="ชนิดป้าย") 
         self.type.set_size_request(80 , 80 )
-
         self.calculated_type = Gtk.ComboBox.new_with_model(self.list_store)
         self.calculated_type.set_size_request(180 , 80 )
         
@@ -82,8 +94,8 @@ class Page2(Gtk.Grid):
 
         self.taxPrice = Gtk.Label("ราคาภาษี") 
         self.taxPrice.set_size_request(80 , 40 )
-        self.calculated_taxPrice = Gtk.Label()
-        self.calculated_taxPrice.set_size_request(200 , 40 )
+        self.calculated_taxPrice = Gtk.Entry()
+        self.calculated_taxPrice.set_size_request(205 , 40 )
 
         # bottom 
         self.boxBottomContent = Gtk.Box() 
@@ -91,24 +103,25 @@ class Page2(Gtk.Grid):
 
         self.latitude = Gtk.Label(label="ละติจูด")
         self.latitude.set_size_request(80 , 40 ) 
-        self.calculated_latitude = Gtk.Label() 
-        self.calculated_latitude.set_size_request(200 , 40 )
+        self.calculated_latitude = Gtk.Entry()
+        self.calculated_latitude.set_size_request(205 , 40 )
 
         self.longitude = Gtk.Label(label="ลองจิจูด") 
         self.longitude.set_size_request(80 , 40 ) 
-        self.calculated_longitude  = Gtk.Label() 
-        self.calculated_longitude.set_size_request(200 , 40 )
+        self.calculated_longitude  = Gtk.Entry()
+        self.calculated_longitude.set_size_request(205 , 40 )
 
         self.time = Gtk.Label(label="เวลา") 
         self.time.set_size_request(80 , 40 ) 
         self.calculated_time  = Gtk.Label( label = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") ) 
-        self.calculated_time.set_size_request(200 , 40 )
+        self.calculated_time.set_size_request(205 , 40 )
          
         # add styling
-        
         self.style_provider = Gtk.CssProvider()
         self.style_provider.load_from_path("./styles/page2.style.css")
-        
+
+        self.contextLabel= self.label.get_style_context()
+
         self.contextImage = self.image.get_style_context()
         self.contextBoxTopContent = self.boxTopContent.get_style_context()
         self.contextBoxBottomContent = self.boxBottomContent.get_style_context()
@@ -126,14 +139,16 @@ class Page2(Gtk.Grid):
         self.contextCalculated_taxPrice = self.calculated_taxPrice.get_style_context()
         self.contextCalculated_type = self.calculated_type.get_style_context()
 
-        self.contextLatitude = self.type.get_style_context()
-        self.contextLongitude = self.type.get_style_context()
-        self.contextTime = self.type.get_style_context()
+        self.contextLatitude = self.latitude.get_style_context()
+        self.contextLongitude = self.longitude.get_style_context()
+        self.contextTime = self.time.get_style_context()
         
         self.contextCalulated_latitude = self.calculated_latitude.get_style_context()
         self.contextCalulated_longitude = self.calculated_longitude.get_style_context()
         self.contextCalculated_time = self.calculated_time.get_style_context()
    
+        self.label.get_style_context().add_class("labelName")
+
         self.image.get_style_context().add_class("image")
         self.boxTopContent.get_style_context().add_class("boxTopContent")
         self.boxBottomContent.get_style_context().add_class("boxBottomContent")
@@ -159,6 +174,8 @@ class Page2(Gtk.Grid):
         self.calculated_longitude.get_style_context().add_class("calculatedBox")
         self.calculated_time.get_style_context().add_class("calculatedBox")
 
+        self.contextLabel.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
         self.contextImage.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextBoxTopContent.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextBoxBottomContent.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
@@ -183,9 +200,6 @@ class Page2(Gtk.Grid):
         self.contextCalulated_latitude.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextCalulated_longitude.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextCalculated_time.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-
-
 
         # adding content to page 
         self.boxTopContent.add(self.gridTopContent)
@@ -277,24 +291,91 @@ class Page2(Gtk.Grid):
         self.gridPage.attach( self.gridContentWrapper , 0 , 1 , 1, 1 )
         
         self.add(self.gridPage)
-   
+        self.set_can_focus(True) 
+        self.connect("key-press-event", self.on_key_press)
+
+    def on_key_press(self, widget, event):
+        keyval = event.keyval
+        key_actions = {
+            105: self.decrement_entity,  # i
+            107: self.increment_entity,  # k
+            122: self.confirm_action,     # z
+            120: self.cancel_action       # x
+        }
+
+        action_function = key_actions.get(keyval, None)
+        
+        if action_function:
+            action_function()
+            print(self.current_entity)
+            self.update_ui()
+            self.calculated_width.queue_draw()
+            self.calculated_height.queue_draw()
+            self.calculated_type.queue_draw()
+        else:
+            pass
+
+
+    def update_ui(self):
+        update_functions = [
+            self.update_calculated_width,
+            self.update_calculated_height,
+            self.update_calculated_type
+        ]
+
+        for index, update_function in enumerate(update_functions):
+            if index == self.current_entity:
+                update_function()
+
+
+    def update_calculated_width(self):
+        self.calculated_width.get_style_context().add_class("blue-border")
+        self.calculated_height.get_style_context().remove_class("blue-border")
+        self.calculated_type.get_style_context().remove_class("combo-box-selected")
+
+    def update_calculated_height(self):
+        self.calculated_width.get_style_context().remove_class("blue-border")
+        self.calculated_height.get_style_context().add_class("blue-border")
+        self.calculated_type.get_style_context().remove_class("combo-box-selected")
+
+    def update_calculated_type(self):
+        self.calculated_width.get_style_context().remove_class("blue-border")
+        self.calculated_height.get_style_context().remove_class("blue-border")
+        self.calculated_type.get_style_context().add_class("combo-box-selected")
+
+    def increment_entity(self):
+        print("i")
+        self.current_entity += 1
+        self.current_entity = min(self.current_entity, 2)
+        self.update_ui()
+
+    def decrement_entity(self):
+        print("j")
+        self.current_entity -= 1
+        self.current_entity = max(self.current_entity, 0)
+        self.update_ui()
+
+    def confirm_action(self):
+        self.is_cancel = False
+        print("z")
+
+    def cancel_action(self):
+        self.is_cancel = True
+        print("x")
+
+
     # stack page change handler 
     def on_stack_visible_child_changed(self , stack, param_spec):
         visible_child_name = self.stack.get_visible_child_name()
         print("change child to page2")
         if visible_child_name == "page2":
             # Retrieve the filename from the main window
+            self.grab_focus()
             exported_data = self.main_window.get_processing_data()
             if exported_data:
                 print("ei ei ,",exported_data['src_image'])
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(exported_data['src_image'])
-                scaled_pixbuf = pixbuf.scale_simple(728, 546, GdkPixbuf.InterpType.BILINEAR)
+                scaled_pixbuf = pixbuf.scale_simple(720, 405, GdkPixbuf.InterpType.BILINEAR)
                 self.image.set_from_pixbuf(scaled_pixbuf)
-                # set attributes 
-                
-                # set image
-                
-                # set calculated data
-
-                # if not show may need to update/re-draw
+               
                 

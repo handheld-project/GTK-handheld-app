@@ -1,6 +1,7 @@
 .image {
-    background-color: rgb(129, 13, 13);
+    background-color: rgb(78, 78, 78);
     margin-left: 25px;
+    border-radius: 20px;
 }
 
 .labelName{
@@ -10,8 +11,10 @@
 
 .gridContentWrapper {
     background-color: rgb(28,28,28); 
-    padding-left: 26px;
-    padding-right: 26px;
+    /* padding-left: 26px;
+    padding-right: 26px; */
+    padding-top:40px;
+    padding-bottom:40px;
 }
 
 .boxTopContent {
@@ -19,29 +22,46 @@
     border-radius: 15px;
     padding: 10px;
     margin-bottom : 30px ;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 15px;
+    margin-right: 25px;
 }
 
 .boxBottomContent{
     background-color: rgb(197, 197, 197);
     border-radius: 15px;
     padding: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 15px;
+    margin-right: 25px;
 }
 
 .calculatedBox{
     background-color: rgb(255, 255, 255);
+    border:3px solid rgb(255, 255, 255);
     border-radius: 5px;
     margin-top: 10px;
     margin-left: 5px;
 }
 
-.combo-box {
-    border-radius: 50px;
+.blue-border{
+    background-color: rgb(255, 255, 255);
+    border:3px solid rgb(50, 129, 231);
+    border-radius: 5px;
     margin-top: 10px;
     margin-left: 5px;
-
 }
 
+.combo-box{
+    background-color: rgb(255, 255, 255);
+    border:3px solid rgb(255, 255, 255);
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+.combo-box-selected{
+    background-color: rgb(255, 255, 255);
+    border:3px solid rgb(50, 129, 231);
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-left: 5px;
+}

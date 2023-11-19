@@ -140,6 +140,7 @@ class Page1(Gtk.Grid):
         return True
     
     def release_capture(self) :
+        self.set_can_focus(False) 
         self.capture.release()
 
 class CircularButton(Gtk.EventBox):
@@ -210,10 +211,10 @@ class CircularButton(Gtk.EventBox):
     
 
     def on_button_press(self, widget, event):
-        self.stack.get_child_by_name("page1").release_capture()
+        # self.stack.get_child_by_name("page1").release_capture()
 
         print(f"Setting capture resolution to 1280x720")
-        self.capture = cv2.VideoCapture(0)
+        # self.capture = cv2.VideoCapture(0)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -254,7 +255,7 @@ class CircularButton(Gtk.EventBox):
     def process_image(self):
         # Simulate image processing (replace this with your actual processing logic)
         print("process_image_start")
-        time.sleep(3)  # Simulate 3 seconds of processing
+        time.sleep(1)  # Simulate 3 seconds of processing
         # Switch to Page 2 after processing is complete
         GLib.idle_add(self.switch_to_page) 
         print("process_image_stop")
