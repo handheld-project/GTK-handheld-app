@@ -50,18 +50,12 @@
     margin-left: 5px;
 }
 
-.combo-box{
-    background-color: rgb(255, 255, 255);
-    border:3px solid rgb(255, 255, 255);
-    border-radius: 10px;
+.unitLabel {
     margin-top: 10px;
-    margin-left: 5px;
+    margin-right:65px
 }
 
-.combo-box-selected{
-    background-color: rgb(255, 255, 255);
-    border:3px solid rgb(50, 129, 231);
-    border-radius: 10px;
+.unitAreaLabel {
     margin-top: 10px;
-    margin-left: 5px;
+    margin-left: 160px;
 }
