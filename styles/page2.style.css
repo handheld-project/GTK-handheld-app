@@ -21,12 +21,12 @@
     background-color: rgb(197, 197, 197);
     border-radius: 15px;
     padding: 10px;
-    margin-bottom : 30px ;
     margin-left: 15px;
     margin-right: 25px;
 }
 
 .boxBottomContent{
+    margin-top : 20px ;
     background-color: rgb(197, 197, 197);
     border-radius: 15px;
     padding: 10px;
@@ -59,3 +59,57 @@
     margin-top: 10px;
     margin-left: 160px;
 }
+
+.radio {
+    border:3px solid transparent;
+    border-radius: 5px;
+    margin-top: 2px;
+}
+
+.radioSelected{
+    border:3px solid rgb(50, 129, 231);
+    border-radius: 5px;
+    margin-top: 2px;
+}
+
+.goBackButton{
+    margin-top: 10px;
+    border:3px solid transparent;
+    border-radius: 15px;
+    background: rgba(211, 129, 129,1);
+    color: whitesmoke;
+}
+
+.goBackButtonSelect{
+    margin-top: 10px;
+    border:3px solid rgb(192, 192, 192);
+    border-radius: 15px;
+    background: rgba(155, 97, 97,1);
+    color: whitesmoke;
+}
+
+.goNextButton{
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 20px ; 
+    border:3px solid transparent;
+    border-radius: 15px;
+    background: rgb(85, 156, 83);
+    color: whitesmoke;
+}
+
+.goNextButtonSelect{
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 20px ; 
+    border:3px solid rgb(192, 192, 192);
+    border-radius: 15px;
+    background: rgb(59, 109, 56);
+    color: whitesmoke;
+}
+
+
+
+
+
+

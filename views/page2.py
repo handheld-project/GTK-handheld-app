@@ -3,7 +3,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib,Pango
 import datetime
-import os
+from components.boBackButton import GoBackButton
 # อักษรภาษาไทยทั้งหมด
 # อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น
 # อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย
@@ -17,7 +17,7 @@ class Page2(Gtk.Grid):
         self.main_window = main_window
         self.filename = ""
         self.stack.connect("notify::visible-child-name", self.on_stack_visible_child_changed)
-        
+
         # control variable 
         self.current_entity = 0
         self.is_confirmed = None 
@@ -28,6 +28,15 @@ class Page2(Gtk.Grid):
         self.gridPage.set_valign(Gtk.Align.CENTER)
         self.gridPage.set_halign(Gtk.Align.CENTER)
         self.gridPage.set_column_homogeneous(True)  # Make columns expand equall
+
+        # function button
+        self.goBackButton = Gtk.Button("ถ่ายรูปใหม่")
+        self.goBackButton.set_size_request(60,30)
+        
+
+        self.goNextButton = Gtk.Button("ยืนยันข้อมูล")
+        self.goBackButton.set_size_request(120,30)
+        
 
         #gridContents wrapper
         self.gridContentWrapper = Gtk.Grid() 
@@ -76,6 +85,13 @@ class Page2(Gtk.Grid):
         self.calculated_height.set_adjustment(self.adjustment_height)
         self.calculated_height.set_digits(2)  
 
+        self.radio_button1 = Gtk.RadioButton.new_with_label_from_widget(None, "ข้อความเคลื่อนไหวได้")
+        self.radio_button1.connect("toggled", self.on_radio_button_toggled)
+
+        # Create a radio button with the label "Option 2"
+        self.radio_button2 = Gtk.RadioButton.new_with_label_from_widget(self.radio_button1, "ข้อความเคลื่อนไหวไม่ได้")
+        self.radio_button2.connect("toggled", self.on_radio_button_toggled)
+
         self.area = Gtk.Label(label="พื้นที่")
         self.area.set_size_request(80 , 40 )
         self.calculated_area = Gtk.Entry()
@@ -83,6 +99,7 @@ class Page2(Gtk.Grid):
 
         self.type = Gtk.Label(label="ชนิดป้าย") 
         self.type.set_size_request(80 , 80 )
+
         self.calculated_type_entry = Gtk.Entry()
         self.calculated_type_entry.set_size_request(205, 80)
         self.calculated_type_entry.set_sensitive(False)
@@ -99,6 +116,9 @@ class Page2(Gtk.Grid):
             list_box_row = Gtk.ListBoxRow()
             list_box_row.add(list_item)
             self.dropdown_list.add(list_box_row)
+             
+        self.dropdown_list.select_row(self.dropdown_list.get_row_at_index(0))
+
 
         self.taxPrice = Gtk.Label("ราคาภาษี") 
         self.taxPrice.set_size_request(80 , 40 )
@@ -128,6 +148,9 @@ class Page2(Gtk.Grid):
         self.style_provider = Gtk.CssProvider()
         self.style_provider.load_from_path("./styles/page2.style.css")
 
+        self.contextGoBack = self.goBackButton.get_style_context()
+        self.contextGoNext = self.goNextButton.get_style_context()
+
         self.contextLabel = self.label.get_style_context()
         self.contextUnitLabelW = self.unit_label_w.get_style_context()
         self.contextUnitLabelH = self.unit_label_h.get_style_context()
@@ -144,6 +167,9 @@ class Page2(Gtk.Grid):
         self.contextArea = self.area.get_style_context()
         self.contextTaxPrice = self.taxPrice.get_style_context()
         self.contextType = self.type.get_style_context()
+        self.contextRadio1 = self.radio_button1.get_style_context()
+        self.contextRadio2 = self.radio_button2.get_style_context()
+        self.contextDropdownList = self.dropdown_list.get_style_context()
 
         self.contextCalculated_width = self.calculated_width.get_style_context()
         self.contextCalculated_height= self.calculated_height.get_style_context()
@@ -159,6 +185,9 @@ class Page2(Gtk.Grid):
         self.contextCalulated_longitude = self.calculated_longitude.get_style_context()
         self.contextCalculated_time = self.calculated_time.get_style_context()
    
+        self.goBackButton.get_style_context().add_class("goBackButton")
+        self.goNextButton.get_style_context().add_class("goNextButton")
+
         self.label.get_style_context().add_class("labelName")
         self.unit_label_w.get_style_context().add_class("unitLabel")
         self.unit_label_h.get_style_context().add_class("unitLabel")
@@ -175,12 +204,15 @@ class Page2(Gtk.Grid):
         self.area.get_style_context().add_class("labelName")
         self.taxPrice.get_style_context().add_class("labelName")
         self.type.get_style_context().add_class("labelName")
+        self.radio_button1.get_style_context().add_class("radio")
+        self.radio_button2.get_style_context().add_class("radio")
 
         self.calculated_width.get_style_context().add_class("calculatedBox")
         self.calculated_height.get_style_context().add_class("calculatedBox")
         self.calculated_area.get_style_context().add_class("calculatedBox")
         self.calculated_taxPrice.get_style_context().add_class("calculatedBox")
-        self.calculated_type_entry .get_style_context().add_class("calculatedBox")
+        self.calculated_type_entry.get_style_context().add_class("calculatedBox")
+        self.dropdown_list.get_style_context().add_class("dropdownList")
 
         self.latitude.get_style_context().add_class("labelName")
         self.longitude.get_style_context().add_class("labelName")
@@ -189,6 +221,9 @@ class Page2(Gtk.Grid):
         self.calculated_latitude.get_style_context().add_class("calculatedBox")
         self.calculated_longitude.get_style_context().add_class("calculatedBox")
         self.calculated_time.get_style_context().add_class("calculatedBox")
+
+        self.contextGoBack.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextGoNext.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         self.contextLabel.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextUnitLabelW.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
@@ -206,6 +241,9 @@ class Page2(Gtk.Grid):
         self.contextArea.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextTaxPrice.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextType.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextRadio1.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextRadio2.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.contextDropdownList.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         self.contextCalculated_width.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         self.contextCalculated_height.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
@@ -232,27 +270,17 @@ class Page2(Gtk.Grid):
             # align top content
         self.width.set_halign(Gtk.Align.START)
         self.height.set_halign(Gtk.Align.START)
+        self.radio_button1.set_halign(Gtk.Align.START)
+        self.radio_button2.set_halign(Gtk.Align.START)
         self.area.set_halign(Gtk.Align.START)
         self.type.set_halign(Gtk.Align.START)
         self.taxPrice.set_halign(Gtk.Align.START)
-
-        # self.width.set_valign(Gtk.Align.START)
-        # self.height.set_valign(Gtk.Align.START)
-        # self.area.set_valign(Gtk.Align.START)
-        # self.type.set_valign(Gtk.Align.START)
-        # self.taxPrice.set_valign(Gtk.Align.START)
 
         self.calculated_width.set_halign(Gtk.Align.END)
         self.calculated_height.set_halign(Gtk.Align.END)
         self.calculated_area.set_halign(Gtk.Align.END)
         self.calculated_type_entry .set_halign(Gtk.Align.END)
         self.calculated_taxPrice.set_halign(Gtk.Align.END)
-
-        # self.calculated_width.set_valign(Gtk.Align.END)
-        # self.calculated_height.set_valign(Gtk.Align.END)
-        # self.calculated_area.set_valign(Gtk.Align.END)
-        # self.calculated_type.set_valign(Gtk.Align.END)
-        # self.calculated_taxPrice.set_valign(Gtk.Align.END)
 
             # align bottom content
         self.latitude.set_halign(Gtk.Align.START)
@@ -280,6 +308,8 @@ class Page2(Gtk.Grid):
         self.boxImage.add(self.image)
 
             # adding top content 
+            # left top width height 
+
         self.gridTopContent.attach( self.topContentLabel , 0 , 0 ,2 , 1 )
         self.gridTopContent.attach( self.width , 0 , 1 , 1 , 1)
         self.gridTopContent.attach( self.unit_label_w, 1 , 1 , 1 , 1 ) 
@@ -287,15 +317,17 @@ class Page2(Gtk.Grid):
         self.gridTopContent.attach( self.height , 0 , 2 , 1 , 1)
         self.gridTopContent.attach( self.unit_label_h, 1 , 2 , 1 , 1 ) 
         self.gridTopContent.attach( self.calculated_height , 1 , 2 ,1 ,1 )
-        self.gridTopContent.attach( self.area , 0 ,3 ,1, 1)
-        self.gridTopContent.attach( self.unit_area_label, 1 , 3 , 1 , 1 ) 
-        self.gridTopContent.attach( self.calculated_area , 1 , 3, 1 , 1)
-        self.gridTopContent.attach( self.type , 0 , 4 , 1 , 1 )
-        self.gridTopContent.attach( self.dropdown_list, 1, 4, 1, 1)
-        self.gridTopContent.attach( self.calculated_type_entry  ,1 , 4 ,1 ,1 )
-        self.gridTopContent.attach( self.taxPrice ,0 ,5 ,1 ,1 )
-        self.gridTopContent.attach( self.unit_tax ,1 ,5 ,1, 1)
-        self.gridTopContent.attach( self.calculated_taxPrice ,1 ,5 ,1, 1)
+        self.gridTopContent.attach( self.radio_button1 , 1 , 3 ,1 ,1 )
+        self.gridTopContent.attach( self.radio_button2 , 1 , 4 ,1 ,1 )
+        self.gridTopContent.attach( self.area ,  0 , 6 , 1 , 1)
+        self.gridTopContent.attach( self.unit_area_label,  1, 6, 1, 1) 
+        self.gridTopContent.attach( self.calculated_area , 1 , 6 ,1 ,1)
+        self.gridTopContent.attach( self.type ,0 ,5 ,1, 1)
+        self.gridTopContent.attach( self.dropdown_list, 1 , 5 , 1 , 1 )
+        self.gridTopContent.attach( self.calculated_type_entry  ,1 , 5, 1 , 1)
+        self.gridTopContent.attach( self.taxPrice ,0 ,7 ,1 ,1 )
+        self.gridTopContent.attach( self.unit_tax ,1 ,7 ,1, 1)
+        self.gridTopContent.attach( self.calculated_taxPrice ,1 ,7 ,1, 1)
 
         #  adding bottom conntent
             # left top width heigt 
@@ -306,38 +338,42 @@ class Page2(Gtk.Grid):
         self.gridBottomContent.attach(self.time , 0, 2 , 1 , 1 ) 
         self.gridBottomContent.attach(self.calculated_time , 1 , 2 , 1 , 1 ) 
 
+        # content in right side
         self.gridContent.attach( self.boxTopContent , 0 , 0 , 1 , 1 )
         self.gridContent.attach( self.boxBottomContent , 0 , 1 , 1 , 1 )
 
-        self.gridContentWrapper.attach(self.boxImage, 0 , 0 , 1 , 1 ) 
-        self.gridContentWrapper.attach(self.gridContent, 1 , 0 , 1 , 1 ) 
+        # content wrap all
+        self.gridContentWrapper.attach(self.boxImage, 0 , 0 , 2 , 1 ) 
+        self.gridContentWrapper.attach(self.gridContent, 2 , 0 , 2 , 1 ) 
+        self.gridContentWrapper.attach( self.goBackButton ,2 ,1 ,1 ,1 )
+        self.gridContentWrapper.attach( self.goNextButton ,3 ,1 ,1 ,1 )
 
-        self.gridPage.attach( self.label , 0 , 0 , 1 , 1 )
-        self.gridPage.attach( self.gridContentWrapper , 0 , 1 , 1, 1 )
+        self.gridPage.attach( self.label , 0 , 0 , 4 , 1 )
+        self.gridPage.attach( self.gridContentWrapper , 0 , 1 , 4, 1 )
         
         self.add(self.gridPage)
+
         self.set_can_focus(True) 
         self.connect("key-press-event", self.on_key_press)
+        self.goBackButton.connect("clicked", self.on_go_back)
+        self.goNextButton.connect("clicked", self.on_go_next)
 
     def on_key_press(self, widget, event):
         keyval = event.keyval
-        
+        print(keyval)
         if not self.is_confirmed :
-            print('on is_confirm = false') 
-            
+
             key_actions = {
                 105: self.decrement_entity,  # i
                 107: self.increment_entity,  # k
                 122: self.confirm_action,     # z
                 120: self.cancel_action       # x
             }
-    
             self.update_ui()
     
         else :
             # handle editing value for GTK.comboBox() and GTK.spinButton()
             
-            print('on is_confirm = true') 
             # type spinButton
             if (self.current_entity == 0) :
                 key_actions = {
@@ -345,18 +381,18 @@ class Page2(Gtk.Grid):
                     107: self.decrease_width_value,  # k
                     120: self.cancel_action       # x
                 }
-            if (self.current_entity == 1) :
+            elif (self.current_entity == 1) :
                 key_actions = {
                     105: self.increase_height_value,  # i
                     107: self.decrease_height_value,  # k
                     120: self.cancel_action       # x
                 }
-            elif self.current_entity == 2 :
+            #  type check box 
+            elif self.current_entity == 4 :
                 key_actions = {
                     105: self.chose_upper_child_combo,  # i
                     107: self.chose_lower_child_combo,  # k
                     122: self.confirm_combo,     # z
-                    120: self.cancel_action       # x
                 }
                 
         action_function = key_actions.get(keyval, None)
@@ -365,15 +401,42 @@ class Page2(Gtk.Grid):
         self.calculated_width.queue_draw()
         self.calculated_height.queue_draw()
         self.calculated_type_entry.queue_draw()
+        self.radio_button1.queue_draw()
+        self.radio_button2.queue_draw()
+        self.goBackButton.queue_draw()
+        self.goNextButton.queue_draw()
 
     def chose_upper_child_combo(self):
-        pass
+        selected_row = self.dropdown_list.get_selected_row()
+        if selected_row:
+            all_rows = list(self.dropdown_list.get_children())
+            index = all_rows.index(selected_row)
+            if index > 0:
+                prev_row = all_rows[index - 1]
+                self.dropdown_list.select_row(prev_row)
+            else : 
+                index = 1 
 
     def chose_lower_child_combo(self):
-        pass
+        selected_row = self.dropdown_list.get_selected_row()
+        if selected_row:
+            all_rows = list(self.dropdown_list.get_children())
+            index = all_rows.index(selected_row)
+            if index < 3:
+                prev_row = all_rows[index + 1]
+                self.dropdown_list.select_row(prev_row)
+            else : 
+                index = 2
 
     def confirm_combo(self):
-        self.dropdown_list.hide()
+        selected_row = self.dropdown_list.get_selected_row()
+        if(selected_row):
+            text_value = selected_row.get_child().get_text()
+            self.calculated_type_entry.set_text(text_value)
+            self.calculated_type_entry.queue_draw()
+
+            self.is_confirmed = False 
+            self.dropdown_list.hide()
 
     def decrease_height_value(self) :
         self.calculated_height.set_value(self.calculated_height.get_value()-0.01)
@@ -391,86 +454,78 @@ class Page2(Gtk.Grid):
         update_functions = [
             self.update_calculated_width,
             self.update_calculated_height,
-            self.update_calculated_type
+            self.update_radio_1,
+            self.update_radio_2,
+            self.update_calculated_type,
+            self.update_goback,
+            self.update_gonext
         ]
 
         for index, update_function in enumerate(update_functions):
             if index == self.current_entity:
                 update_function()
 
-
     def update_calculated_width(self):
         self.calculated_width.get_style_context().add_class("blue-border")
         self.calculated_height.get_style_context().remove_class("blue-border")
-        self.calculated_type_entry.get_style_context().remove_class("blue-border")
 
     def update_calculated_height(self):
         self.calculated_width.get_style_context().remove_class("blue-border")
         self.calculated_height.get_style_context().add_class("blue-border")
+        self.radio_button1.get_style_context().remove_class("radioSelected")
+
+    def update_radio_1(self):
+        self.calculated_height.get_style_context().remove_class("blue-border")
+        self.radio_button1.get_style_context().add_class("radioSelected")
+        self.radio_button2.get_style_context().remove_class("radioSelected")
+
+    def update_radio_2(self):
+
+        self.radio_button1.get_style_context().remove_class("radioSelected")
+        self.radio_button2.get_style_context().add_class("radioSelected")        
         self.calculated_type_entry.get_style_context().remove_class("blue-border")
 
     def update_calculated_type(self):
-        self.calculated_width.get_style_context().remove_class("blue-border")
-        self.calculated_height.get_style_context().remove_class("blue-border")
+        self.radio_button2.get_style_context().remove_class("radioSelected")        
         self.calculated_type_entry.get_style_context().add_class("blue-border")
+        self.goBackButton.get_style_context().remove_class("goBackButtonSelect")        
+
+    def update_goback(self):
+        self.calculated_type_entry.get_style_context().remove_class("blue-border")     
+        self.goBackButton.get_style_context().add_class("goBackButtonSelect")        
+        self.goNextButton.get_style_context().remove_class("goNextButtonSelect")
+
+    def update_gonext(self):
+        self.goBackButton.get_style_context().remove_class("goBackButtonSelect")        
+        self.goNextButton.get_style_context().add_class("goNextButtonSelect")
 
     def increment_entity(self):
-        print("i")
         self.current_entity += 1
-        self.current_entity = min(self.current_entity, 2)
+        self.current_entity = min(self.current_entity, 6)
         self.update_ui()
 
     def decrement_entity(self):
-        print("j")
         self.current_entity -= 1
         self.current_entity = max(self.current_entity, 0)
         self.update_ui()
 
     def cancel_action(self):
         self.is_confirmed = False
-        print("x")
 
     def confirm_action(self):
-        self.is_confirmed = True
-        if(self.current_entity == 2): 
+        if self.current_entity == 4 : 
             self.dropdown_list.show()
-            self.calculated_type_entry.connect("key-press-event", self.on_combo_key_press)
-        print("z")
-  
-    def on_combo_key_press(self, widget, event):
-        print("Combo key pressed")
-        keyval = event.keyval
-
-        if keyval == Gdk.KEY_i:
-            # Handle navigation up
-            selected_row = self.dropdown_list.get_selected_row()
-            if selected_row:
-                prev_row = selected_row.get_previous_sibling()
-                if prev_row:
-                    self.dropdown_list.select_row(prev_row)
-
-        elif keyval == Gdk.KEY_k:
-            # Handle navigation down
-            selected_row = self.dropdown_list.get_selected_row()
-            if selected_row:
-                next_row = selected_row.get_next_sibling()
-                if next_row:
-                    self.dropdown_list.select_row(next_row)
-
-        elif keyval == Gdk.KEY_z:
-            # Handle confirm action
-            selected_row = self.dropdown_list.get_selected_row()
-            if selected_row:
-                label_text = selected_row.get_child().get_child().get_text()
-                self.calculated_type_entry.set_text(label_text)
-                self.confirm_combo()
-
-        elif keyval == Gdk.KEY_x:
-            # Handle cancel action
-            self.cancel_action()
-
-        return True  # Consume the event to prevent further processing
-
+            self.is_confirmed = True
+        elif self.current_entity == 2 : 
+            self.radio_button1.set_active(True)
+        elif self.current_entity == 3 :
+            self.radio_button2.set_active(True)
+        elif self.current_entity == 5 : 
+            self.goBackButton.emit("clicked")
+        elif self.current_entity == 6 : 
+            self.goNextButton.emit("clicked")
+        else : 
+            self.is_confirmed = True
 
     # stack page change handler 
     def on_stack_visible_child_changed(self , stack, param_spec):
@@ -482,9 +537,18 @@ class Page2(Gtk.Grid):
             exported_data = self.main_window.get_processing_data()
             self.dropdown_list.hide()
             if exported_data:
-                print("ei ei ,",exported_data['src_image'])
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(exported_data['src_image'])
                 scaled_pixbuf = pixbuf.scale_simple(720, 405, GdkPixbuf.InterpType.BILINEAR)
                 self.image.set_from_pixbuf(scaled_pixbuf)
                
-                
+    def on_radio_button_toggled(self, button):
+        if button.get_active():
+            print(button.get_label() + " selected")
+
+    def on_go_back(self,widget) :
+        self.stack.set_visible_child_name("page1")
+
+    def on_go_next(self,widget) :
+        self.stack.set_visible_child_name("page3")
+
+    
