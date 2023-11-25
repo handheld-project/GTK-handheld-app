@@ -4,6 +4,8 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib,Pango
 import datetime
 from components.boBackButton import GoBackButton
+import os
+
 # อักษรภาษาไทยทั้งหมด
 # อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น
 # อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย
@@ -12,6 +14,7 @@ class Page2(Gtk.Grid):
     def __init__(self , main_window , stack):
 
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        print("page2Id",self)
 
         self.stack = stack
         self.main_window = main_window
@@ -32,12 +35,10 @@ class Page2(Gtk.Grid):
         # function button
         self.goBackButton = Gtk.Button("ถ่ายรูปใหม่")
         self.goBackButton.set_size_request(60,30)
-        
 
         self.goNextButton = Gtk.Button("ยืนยันข้อมูล")
         self.goBackButton.set_size_request(120,30)
         
-
         #gridContents wrapper
         self.gridContentWrapper = Gtk.Grid() 
 
@@ -106,13 +107,14 @@ class Page2(Gtk.Grid):
 
         self.dropdown_list = Gtk.ListBox()
         self.dropdown_list.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        self.dropdown_list.set_size_request(-1,50)
         # Populate the ListBox with items
-        for i, item_text in enumerate(["1. อักษรภาษาไทยทั้งหมด", "2. อักษรภาษาไทยปน กับ \nภาษาต่างประเทศ/ภาพ\n/เครื่องหมายอื่น", "3. อักษาไทยอยู่ต่ำกว่า\nอักษรต่างประเทศ/\nไม่มีอักษรไทยเลย"]):
+        for i, item_text in enumerate(["1. อักษรภาษาไทยทั้งหมด", "2. อักษรภาษาไทยปนกับภาษาต่างประเทศ\n/ภาพ/เครื่องหมายอื่น", "3. อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ\n/ไม่มีอักษรไทยเลย"]):
             list_item = Gtk.Label(label=item_text)
-            if i == 2:  # Adjust alignment for the third item
-                list_item.set_alignment(0.3, 0.2)
-            else:
-                list_item.set_alignment(0.5, 0.5)
+            # if i == 2:  # Adjust alignment for the third item
+            #     list_item.set_alignment(0.3, 0.2)
+            # else:
+            #     list_item.set_alignment(0.5, 0.5)
             list_box_row = Gtk.ListBoxRow()
             list_box_row.add(list_item)
             self.dropdown_list.add(list_box_row)
@@ -323,7 +325,6 @@ class Page2(Gtk.Grid):
         self.gridTopContent.attach( self.unit_area_label,  1, 6, 1, 1) 
         self.gridTopContent.attach( self.calculated_area , 1 , 6 ,1 ,1)
         self.gridTopContent.attach( self.type ,0 ,5 ,1, 1)
-        self.gridTopContent.attach( self.dropdown_list, 1 , 5 , 1 , 1 )
         self.gridTopContent.attach( self.calculated_type_entry  ,1 , 5, 1 , 1)
         self.gridTopContent.attach( self.taxPrice ,0 ,7 ,1 ,1 )
         self.gridTopContent.attach( self.unit_tax ,1 ,7 ,1, 1)
@@ -340,13 +341,17 @@ class Page2(Gtk.Grid):
 
         # content in right side
         self.gridContent.attach( self.boxTopContent , 0 , 0 , 1 , 1 )
+        self.gridContent.attach( self.dropdown_list, 0 , 0 , 2 , 1 )
         self.gridContent.attach( self.boxBottomContent , 0 , 1 , 1 , 1 )
 
         # content wrap all
         self.gridContentWrapper.attach(self.boxImage, 0 , 0 , 2 , 1 ) 
         self.gridContentWrapper.attach(self.gridContent, 2 , 0 , 2 , 1 ) 
+
         self.gridContentWrapper.attach( self.goBackButton ,2 ,1 ,1 ,1 )
         self.gridContentWrapper.attach( self.goNextButton ,3 ,1 ,1 ,1 )
+
+
 
         self.gridPage.attach( self.label , 0 , 0 , 4 , 1 )
         self.gridPage.attach( self.gridContentWrapper , 0 , 1 , 4, 1 )
@@ -530,23 +535,49 @@ class Page2(Gtk.Grid):
     # stack page change handler 
     def on_stack_visible_child_changed(self , stack, param_spec):
         visible_child_name = self.stack.get_visible_child_name()
-        print("change child to page2")
         if visible_child_name == "page2":
             # Retrieve the filename from the main window
+            print("change child to page2")
+            self.main_window.page1.stop_update_Ui()
             self.grab_focus()
             exported_data = self.main_window.get_processing_data()
+            print( "main file name ",self.main_window.get_processing_data() )
+            
             self.dropdown_list.hide()
+
             if exported_data:
+                self.filename = exported_data['src_image']
+                print("self.filename",self.filename)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(exported_data['src_image'])
                 scaled_pixbuf = pixbuf.scale_simple(720, 405, GdkPixbuf.InterpType.BILINEAR)
                 self.image.set_from_pixbuf(scaled_pixbuf)
-               
+  
     def on_radio_button_toggled(self, button):
         if button.get_active():
             print(button.get_label() + " selected")
 
     def on_go_back(self,widget) :
-        self.stack.set_visible_child_name("page1")
+        try:
+            current_path= self.filename
+            os.remove(current_path)
+            print(f"Directory '{current_path}' deleted successfully.")
+            self.stack.set_visible_child_name("page1")
+            
+
+            # self.stack.set_visible_child_name("page1")
+            # self.main_window.reset_all_page()
+
+            # Switch to the first page
+            # self.main_window.page1.stop_update_Ui()
+            # self.main_window.reset_all_page()
+            # self.stack.set_visible_child_name("page1")
+            # self.main_window.close()
+            # self.main_window.page2.hide()
+            # self.main_window.page1.generate_interface()
+
+        except OSError as e:
+            print(f"Error deleting {e}")
+
 
     def on_go_next(self,widget) :
         self.stack.set_visible_child_name("page3")
