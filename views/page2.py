@@ -14,7 +14,12 @@ class Page2(Gtk.Grid):
     def __init__(self , main_window , stack):
 
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        print("page2Id",self)
+        # type price formular
+        self.firstTypeAndPrice = { False:5 , True:10 }
+        self.secondTypeAndPrice = { False:26 ,True:52 } 
+        self.thridTypeAndPrice = { False:50 , True:52 }
+
+        self.is_moveable = None
 
         self.stack = stack
         self.main_window = main_window
@@ -25,6 +30,8 @@ class Page2(Gtk.Grid):
         self.current_entity = 0
         self.is_confirmed = None 
         self.child_combo_index = 0 
+        self.is_popup = False 
+        self.max_entity_index = 5
 
         # gridPage
         self.gridPage = Gtk.Grid() 
@@ -86,17 +93,19 @@ class Page2(Gtk.Grid):
         self.calculated_height.set_adjustment(self.adjustment_height)
         self.calculated_height.set_digits(2)  
 
-        self.radio_button1 = Gtk.RadioButton.new_with_label_from_widget(None, "ข้อความเคลื่อนไหวได้")
+        self.radio_group = Gtk.RadioButton.new(None)
+        self.radio_button1 = Gtk.RadioButton.new_with_label_from_widget(self.radio_group, "ข้อความเคลื่อนไหวได้")
         self.radio_button1.connect("toggled", self.on_radio_button_toggled)
 
         # Create a radio button with the label "Option 2"
-        self.radio_button2 = Gtk.RadioButton.new_with_label_from_widget(self.radio_button1, "ข้อความเคลื่อนไหวไม่ได้")
+        self.radio_button2 = Gtk.RadioButton.new_with_label_from_widget(self.radio_group, "ข้อความเคลื่อนไหวไม่ได้")
         self.radio_button2.connect("toggled", self.on_radio_button_toggled)
 
         self.area = Gtk.Label(label="พื้นที่")
         self.area.set_size_request(80 , 40 )
         self.calculated_area = Gtk.Entry()
         self.calculated_area.set_size_request(205 , 40 )
+        self.calculated_area.set_sensitive(False)
 
         self.type = Gtk.Label(label="ชนิดป้าย") 
         self.type.set_size_request(80 , 80 )
@@ -108,13 +117,10 @@ class Page2(Gtk.Grid):
         self.dropdown_list = Gtk.ListBox()
         self.dropdown_list.set_selection_mode(Gtk.SelectionMode.SINGLE)
         self.dropdown_list.set_size_request(-1,50)
+
         # Populate the ListBox with items
         for i, item_text in enumerate(["1. อักษรภาษาไทยทั้งหมด", "2. อักษรภาษาไทยปนกับภาษาต่างประเทศ\n/ภาพ/เครื่องหมายอื่น", "3. อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ\n/ไม่มีอักษรไทยเลย"]):
             list_item = Gtk.Label(label=item_text)
-            # if i == 2:  # Adjust alignment for the third item
-            #     list_item.set_alignment(0.3, 0.2)
-            # else:
-            #     list_item.set_alignment(0.5, 0.5)
             list_box_row = Gtk.ListBoxRow()
             list_box_row.add(list_item)
             self.dropdown_list.add(list_box_row)
@@ -126,6 +132,8 @@ class Page2(Gtk.Grid):
         self.taxPrice.set_size_request(80 , 40 )
         self.calculated_taxPrice = Gtk.Entry()
         self.calculated_taxPrice.set_size_request(205 , 40 )
+        self.calculated_taxPrice.set_sensitive(False)
+        
 
         # bottom 
         self.boxBottomContent = Gtk.Box() 
@@ -133,18 +141,25 @@ class Page2(Gtk.Grid):
 
         self.latitude = Gtk.Label(label="ละติจูด")
         self.latitude.set_size_request(80 , 40 ) 
-        self.calculated_latitude = Gtk.Entry()
+        self.calculated_latitude = Gtk.Entry( ) 
         self.calculated_latitude.set_size_request(205 , 40 )
+        self.calculated_latitude.set_sensitive(False)
+
 
         self.longitude = Gtk.Label(label="ลองจิจูด") 
         self.longitude.set_size_request(80 , 40 ) 
-        self.calculated_longitude  = Gtk.Entry()
+        self.calculated_longitude  = Gtk.Entry() 
         self.calculated_longitude.set_size_request(205 , 40 )
+        self.calculated_longitude.set_sensitive(False)
+
 
         self.time = Gtk.Label(label="เวลา") 
         self.time.set_size_request(80 , 40 ) 
-        self.calculated_time  = Gtk.Label( label = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") ) 
+        self.calculated_time  = Gtk.Entry() 
         self.calculated_time.set_size_request(205 , 40 )
+        self.calculated_time.set_text(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+        self.calculated_time.set_sensitive(False)
+
          
         # add styling
         self.style_provider = Gtk.CssProvider()
@@ -188,7 +203,7 @@ class Page2(Gtk.Grid):
         self.contextCalculated_time = self.calculated_time.get_style_context()
    
         self.goBackButton.get_style_context().add_class("goBackButton")
-        self.goNextButton.get_style_context().add_class("goNextButton")
+        self.goNextButton.get_style_context().add_class("goNextButtonDisable")
 
         self.label.get_style_context().add_class("labelName")
         self.unit_label_w.get_style_context().add_class("unitLabel")
@@ -351,8 +366,6 @@ class Page2(Gtk.Grid):
         self.gridContentWrapper.attach( self.goBackButton ,2 ,1 ,1 ,1 )
         self.gridContentWrapper.attach( self.goNextButton ,3 ,1 ,1 ,1 )
 
-
-
         self.gridPage.attach( self.label , 0 , 0 , 4 , 1 )
         self.gridPage.attach( self.gridContentWrapper , 0 , 1 , 4, 1 )
         
@@ -365,9 +378,7 @@ class Page2(Gtk.Grid):
 
     def on_key_press(self, widget, event):
         keyval = event.keyval
-        print(keyval)
         if not self.is_confirmed :
-
             key_actions = {
                 105: self.decrement_entity,  # i
                 107: self.increment_entity,  # k
@@ -378,7 +389,6 @@ class Page2(Gtk.Grid):
     
         else :
             # handle editing value for GTK.comboBox() and GTK.spinButton()
-            
             # type spinButton
             if (self.current_entity == 0) :
                 key_actions = {
@@ -397,51 +407,52 @@ class Page2(Gtk.Grid):
                 key_actions = {
                     105: self.chose_upper_child_combo,  # i
                     107: self.chose_lower_child_combo,  # k
+                    120: self.cancel_action,       # x
                     122: self.confirm_combo,     # z
                 }
-                
+            
         action_function = key_actions.get(keyval, None)
         action_function()
-                
-        self.calculated_width.queue_draw()
-        self.calculated_height.queue_draw()
-        self.calculated_type_entry.queue_draw()
-        self.radio_button1.queue_draw()
-        self.radio_button2.queue_draw()
-        self.goBackButton.queue_draw()
-        self.goNextButton.queue_draw()
 
     def chose_upper_child_combo(self):
-        selected_row = self.dropdown_list.get_selected_row()
-        if selected_row:
-            all_rows = list(self.dropdown_list.get_children())
-            index = all_rows.index(selected_row)
-            if index > 0:
-                prev_row = all_rows[index - 1]
-                self.dropdown_list.select_row(prev_row)
-            else : 
-                index = 1 
+            selected_row = self.dropdown_list.get_selected_row()
+            if selected_row:
+                all_rows = list(self.dropdown_list.get_children())
+                index = all_rows.index(selected_row)
+                if index > 0:
+                    prev_row = all_rows[index - 1]
+                    self.dropdown_list.select_row(prev_row)
+                else : 
+                    index = 1 
 
     def chose_lower_child_combo(self):
-        selected_row = self.dropdown_list.get_selected_row()
-        if selected_row:
-            all_rows = list(self.dropdown_list.get_children())
-            index = all_rows.index(selected_row)
-            if index < 3:
-                prev_row = all_rows[index + 1]
-                self.dropdown_list.select_row(prev_row)
-            else : 
-                index = 2
+            selected_row = self.dropdown_list.get_selected_row()
+            if selected_row:
+                all_rows = list(self.dropdown_list.get_children())
+                index = all_rows.index(selected_row)
+                if index < 2:
+                    prev_row = all_rows[index + 1]
+                    self.dropdown_list.select_row(prev_row)
+                else : 
+                    index = 2
+
 
     def confirm_combo(self):
-        selected_row = self.dropdown_list.get_selected_row()
-        if(selected_row):
-            text_value = selected_row.get_child().get_text()
-            self.calculated_type_entry.set_text(text_value)
-            self.calculated_type_entry.queue_draw()
+        print("start",self.is_popup)
+        if self.is_popup is False : 
+            self.dropdown_list.show() 
+            self.is_popup = True
+        else :
+            selected_row = self.dropdown_list.get_selected_row()
+            if(selected_row):
+                text_value = selected_row.get_child().get_text()
+                self.calculated_type_entry.set_text(text_value)
+                self.calculated_type_entry.queue_draw()
+                self.dropdown_list.hide()
+                self.calculate()
+            self.is_popup = False
+        print("end",self.is_popup)
 
-            self.is_confirmed = False 
-            self.dropdown_list.hide()
 
     def decrease_height_value(self) :
         self.calculated_height.set_value(self.calculated_height.get_value()-0.01)
@@ -454,7 +465,7 @@ class Page2(Gtk.Grid):
 
     def increase_width_value(self) :
         self.calculated_width.set_value(self.calculated_width.get_value()+0.01)
-        
+
     def update_ui(self):
         update_functions = [
             self.update_calculated_width,
@@ -469,6 +480,60 @@ class Page2(Gtk.Grid):
         for index, update_function in enumerate(update_functions):
             if index == self.current_entity:
                 update_function()
+
+    def update_confirmed_ui(self):
+        update_functions = [
+            self.update_confirmed_calculated_width,
+            self.update_confirmed_calculated_height,
+            self.do_not_thing,
+            self.do_not_thing,
+            self.update_confirmed_calculated_type
+        ]
+
+        for index, update_function in enumerate(update_functions):
+            if index == self.current_entity:
+                update_function()
+
+    def update_cancle_ui(self):
+        update_functions = [
+            self.update_cancle_calculated_width,
+            self.update_cancle_calculated_height,
+            self.do_not_thing,
+            self.do_not_thing,
+            self.update_cancle_calculated_type
+        ]
+
+        for index, update_function in enumerate(update_functions):
+            if index == self.current_entity:
+                update_function()
+
+    def update_confirmed_calculated_width(self):
+        self.calculated_width.get_style_context().remove_class("blue-border")
+        self.calculated_width.get_style_context().add_class("orange-border")
+
+    def update_confirmed_calculated_height(self):
+        self.calculated_height.get_style_context().remove_class("blue-border")
+        self.calculated_height.get_style_context().add_class("orange-border") 
+
+    def do_not_thing(self):
+        # this method needed dont delet this !
+        pass
+
+    def update_confirmed_calculated_type(self): 
+        self.calculated_type_entry.get_style_context().remove_class("blue-border")
+        self.calculated_type_entry.get_style_context().add_class("orange-border")
+
+    def update_cancle_calculated_width(self):
+        self.calculated_width.get_style_context().add_class("blue-border")
+        self.calculated_width.get_style_context().remove_class("orange-border")
+
+    def update_cancle_calculated_height(self):
+        self.calculated_height.get_style_context().add_class("blue-border")
+        self.calculated_height.get_style_context().remove_class("orange-border") 
+
+    def update_cancle_calculated_type(self): 
+        self.calculated_type_entry.get_style_context().add_class("blue-border")
+        self.calculated_type_entry.get_style_context().remove_class("orange-border")
 
     def update_calculated_width(self):
         self.calculated_width.get_style_context().add_class("blue-border")
@@ -506,7 +571,7 @@ class Page2(Gtk.Grid):
 
     def increment_entity(self):
         self.current_entity += 1
-        self.current_entity = min(self.current_entity, 6)
+        self.current_entity = min(self.current_entity, self.max_entity_index)
         self.update_ui()
 
     def decrement_entity(self):
@@ -515,16 +580,24 @@ class Page2(Gtk.Grid):
         self.update_ui()
 
     def cancel_action(self):
-        self.is_confirmed = False
+        if self.current_entity == 4 and self.is_popup is True: 
+            pass 
+        else :   
+            self.is_confirmed = False
+            self.calculate()
+            self.update_cancle_ui()
 
     def confirm_action(self):
         if self.current_entity == 4 : 
-            self.dropdown_list.show()
             self.is_confirmed = True
+            self.is_popup = True
+            self.dropdown_list.show()
         elif self.current_entity == 2 : 
             self.radio_button1.set_active(True)
+            self.calculate()
         elif self.current_entity == 3 :
             self.radio_button2.set_active(True)
+            self.calculate()
         elif self.current_entity == 5 : 
             self.goBackButton.emit("clicked")
         elif self.current_entity == 6 : 
@@ -532,29 +605,41 @@ class Page2(Gtk.Grid):
         else : 
             self.is_confirmed = True
 
+        # for oragane border confirmed cursur 
+        self.update_confirmed_ui()
+
+
     # stack page change handler 
     def on_stack_visible_child_changed(self , stack, param_spec):
         visible_child_name = self.stack.get_visible_child_name()
         if visible_child_name == "page2":
-            # Retrieve the filename from the main window
-            print("change child to page2")
             self.main_window.page1.stop_update_Ui()
+            # reseting data and UI
+            self.dropdown_list.hide()
             self.grab_focus()
             exported_data = self.main_window.get_processing_data()
-            print( "main file name ",self.main_window.get_processing_data() )
-            
-            self.dropdown_list.hide()
+            self.set_data()
 
             if exported_data:
+                # setting data from processing process ! 
                 self.filename = exported_data['src_image']
-                print("self.filename",self.filename)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(exported_data['src_image'])
                 scaled_pixbuf = pixbuf.scale_simple(720, 405, GdkPixbuf.InterpType.BILINEAR)
                 self.image.set_from_pixbuf(scaled_pixbuf)
-  
+
+
     def on_radio_button_toggled(self, button):
         if button.get_active():
-            print(button.get_label() + " selected")
+            if button.get_label() == "ข้อความเคลื่อนไหวไม่ได้" : 
+                self.is_moveable = False
+            elif button.get_label() == "ข้อความเคลื่อนไหวได้" : 
+                self.is_moveable = True
+
+        self.max_entity_index = 6 
+        
+        self.goNextButton.get_style_context().remove_class("goNextButtonDisable")
+        self.goNextButton.get_style_context().add_class("goNextButton")
+
 
     def on_go_back(self,widget) :
         try:
@@ -562,24 +647,72 @@ class Page2(Gtk.Grid):
             os.remove(current_path)
             print(f"Directory '{current_path}' deleted successfully.")
             self.stack.set_visible_child_name("page1")
-            
-
-            # self.stack.set_visible_child_name("page1")
-            # self.main_window.reset_all_page()
-
-            # Switch to the first page
-            # self.main_window.page1.stop_update_Ui()
-            # self.main_window.reset_all_page()
-            # self.stack.set_visible_child_name("page1")
-            # self.main_window.close()
-            # self.main_window.page2.hide()
-            # self.main_window.page1.generate_interface()
 
         except OSError as e:
             print(f"Error deleting {e}")
 
-
     def on_go_next(self,widget) :
-        self.stack.set_visible_child_name("page3")
+        if self.is_moveable :
+            self.stack.set_visible_child_name("page3")
+        else : 
+            pass
 
-    
+    def set_data(self): 
+        print('worked')
+        # from image model
+        self.set_dropdown_data()
+
+        # from hardware 
+        self.set_data_from_hardware()
+
+        # from calculate function 
+        # pass 
+
+    def set_dropdown_data(self) : 
+        # check type from model then set value 
+
+        # set dropdown to detected type
+        all_rows = list(self.dropdown_list.get_children())
+        self.dropdown_list.select_row(all_rows[1])
+        self.calculated_type_entry.set_text(all_rows[1].get_child().get_text())
+        self.dropdown_list.hide()
+        self.calculated_type_entry.queue_draw()
+      
+
+    def set_data_from_hardware(self): 
+        # w mock
+        self.calculated_width.get_adjustment().set_value(1.00)
+        # h mock
+        self.calculated_height.get_adjustment().set_value(1.00)
+        # latitude mock 
+        self.calculated_latitude.set_text("40.7128° N")
+        # longitude mock 
+        self.calculated_longitude.set_text("-74.0060° W")
+
+
+    def calculate(self): 
+        if(self.is_moveable is not None):
+            # set_area
+            area = self.calculated_width.get_value() * self.calculated_height.get_value()
+            area = "{:.4f}".format(area)
+            self.calculated_area.set_text(area)
+
+            # set_price
+            selected_row = self.dropdown_list.get_selected_row()
+            all_rows = list(self.dropdown_list.get_children())
+            index = all_rows.index(selected_row)    
+            areaCmUnit = (float(area) * (10**4) ) / 500
+            areaCmUnit = float("{:.4f}".format(areaCmUnit))
+            
+            if index == 0 : 
+                price = areaCmUnit * self.firstTypeAndPrice[self.is_moveable]
+            elif index == 1 : 
+                price = areaCmUnit * self.secondTypeAndPrice[self.is_moveable]
+            elif index == 2 : 
+                price = areaCmUnit * self.thridTypeAndPrice[self.is_moveable]
+
+            price = "{:.4f}".format(price)
+            self.calculated_taxPrice.set_text(price)
+            
+        else : 
+            pass 
