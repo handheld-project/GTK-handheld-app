@@ -9,3 +9,7 @@ class XlsxFileMaker :
     def createFile(self) : 
         self.fileName = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
         pass 
+
+    def overWriteFile(self):
+        pass 
+    

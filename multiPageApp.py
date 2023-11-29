@@ -20,6 +20,8 @@ class MultiPageApp(Gtk.ApplicationWindow):
         self.page3 = None
         self.loadingPage = None
         self.splashPage = None
+        self.processing_data = {}
+        self.commited_document = {} 
 
         self.init_stack()
         self.init_main_app_window()
@@ -34,9 +36,10 @@ class MultiPageApp(Gtk.ApplicationWindow):
  
         self.stack.add_named(self.page1, "page1")
         self.stack.add_named(self.page2, "page2")
+        self.stack.add_named(self.page3, "page3")
+
         self.stack.add_named(self.splashPage, "splashPage")
         self.stack.add_named(self.loadingPage, "loadingPage")
-        self.stack.add_named(self.page3, "page3")
 
     def init_main_app_window(self):
         # Set the background color for the entire window
@@ -54,51 +57,12 @@ class MultiPageApp(Gtk.ApplicationWindow):
         # Schedule a callback to switch to Page1 after 3 seconds
         # GLib.timeout_add_seconds(3, self.show_page1)
         
-  
-    def reset_all_page(self):
-        new_stack = Gtk.Stack()
+    def set_document(self, document):
+        self.commited_document = document
 
-        self.page1 = None
-        self.page2 = None
-        self.page3 = None
-        self.loadingPage = None
-        self.splashPage = None
+    def get_set_document(self):
+        return self.commited_document
 
-        # Create new instances of pages
-        self.page1 = Page1(self, new_stack)
-        self.page2 = Page2(self, new_stack)
-        self.page3 = Page3(self, new_stack)
-        self.loadingPage = LoadingPage()
-        self.splashPage = SplashPage(new_stack)
-        
-        print("update pageId", self.page1 ,  self.page2)
-
-        # Add the new instances to the new stack
-        new_stack.add_named(self.page1, "page1")
-        new_stack.add_named(self.page2, "page2")
-        new_stack.add_named(self.splashPage, "splashPage")
-        new_stack.add_named(self.loadingPage, "loadingPage")
-        new_stack.add_named(self.page3, "page3")
-        
-        # Replace the old stack with the new one
-        self.replace_stack(new_stack)
-        
-        # Set the visible child to "page1"
-        # new_stack.set_visible_child_name("page1")
-
-    def replace_stack(self, new_stack):
-        # Get the parent of the current stack
-        parent = self.stack.get_parent()
-        
-        # Remove the old stack from its parent
-        parent.remove(self.stack)
-        
-        # Set the new stack as the stack in the MainWindow
-        self.stack = new_stack
-        
-        # Add the new stack to its parent
-        parent.add(self.stack)
-        
     def set_processing_data(self, processing_data):
         self.processing_data = processing_data
 
@@ -107,6 +71,7 @@ class MultiPageApp(Gtk.ApplicationWindow):
 
     def show_page1(self):
         self.stack.set_visible_child_name("page1")
+        
         return False  # Stop the timeout callback
 
     def run(self):

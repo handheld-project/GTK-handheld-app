@@ -126,8 +126,6 @@ class CircularButton(Gtk.EventBox):
         
     def update_export_data(self):
         self.main_window.set_processing_data(self.export_data)
-        print( self.main_window.get_processing_data() )
-        print("update_done")
 
     def switch_to_page(self):
         self.stack.set_visible_child_name("page2")

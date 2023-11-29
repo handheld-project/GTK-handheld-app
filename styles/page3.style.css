@@ -1,0 +1,163 @@
+.image {
+    background-color: rgb(78, 78, 78);
+    margin-left: 25px;
+    border-radius: 20px;
+}
+
+.labelName{
+    margin-top: 14px;
+    font-size: 14px;
+} 
+
+.gridContentWrapper {
+    background-color: rgb(28,28,28); 
+    padding-top:40px;
+    padding-bottom:40px;
+}
+
+.boxTopContent {
+    background-color: rgb(197, 197, 197);
+    border-radius: 15px;
+    padding: 10px;
+    margin-left: 15px;
+    margin-right: 25px;
+}
+
+.boxBottomContent{
+    margin-top : 20px ;
+    background-color: rgb(197, 197, 197);
+    border-radius: 15px;
+    padding: 10px;
+    margin-left: 15px;
+    margin-right: 25px;
+}
+
+.calculatedBox{
+    background-color: rgb(255, 255, 255);
+    border:3px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+.blue-border{
+    background-color: rgb(255, 255, 255);
+    border:3px solid rgb(50, 129, 231);
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+.orange-border {
+    background-color: rgb(255, 255, 255);
+    border:3px solid rgb(206, 133, 50);
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+.unitLabel {
+    margin-top: 10px;
+    margin-right:65px
+}
+
+.unitAreaLabel {
+    margin-top: 10px;
+    margin-left: 145px;
+}
+
+.radio {
+    border:3px solid transparent;
+    border-radius: 5px;
+    margin-top: 2px;
+}
+
+.radioSelected{
+    border:3px solid rgb(50, 129, 231);
+    border-radius: 5px;
+    margin-top: 2px;
+}
+
+.goBackButton{
+    margin-top: 10px;
+    border:3px solid transparent;
+    border-radius: 15px;
+    background: rgba(211, 129, 129,1);
+    color: whitesmoke;
+}
+
+.goBackButtonSelect{
+    margin-top: 10px;
+    border:3px solid rgb(192, 192, 192);
+    border-radius: 15px;
+    background: rgba(155, 97, 97,1);
+    color: whitesmoke;
+}
+
+.goNextButtonDisable{
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 20px ; 
+    border:3px solid transparent;
+    border-radius: 15px;
+    background: rgb(136, 136, 136);
+    color: whitesmoke;
+}
+
+.goNextButton{
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 20px ; 
+    border:3px solid transparent;
+    border-radius: 15px;
+    background: rgb(85, 156, 83);
+    color: whitesmoke;
+}
+
+.goNextButtonSelect{
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 20px ; 
+    border:3px solid rgb(192, 192, 192);
+    border-radius: 15px;
+    background: rgb(59, 109, 56);
+    color: whitesmoke;
+}
+
+.dropdownList {
+    margin-top: 180px;
+    margin-right: 20px;
+    border:3px solid rgb(192, 192, 192);
+    border-radius: 10px;
+}
+
+.boxExcel {
+    background-color:  rgb(235, 235, 235);
+    border:3px solid rgb(235, 235, 235);
+    border-radius: 15px;
+    margin-right: 40px;
+    margin-bottom: 285px;
+    margin-top: 215px;
+}
+
+.excelImage {
+    margin-right : 45px;
+    margin-bottom: 120px;
+}
+
+.excelLabel {
+    margin-right : 45px;
+    font-size: 16px;
+} 
+
+.excelLabel2 {
+    margin-right : 40px;
+    margin-top: 45px ; 
+    font-size: 18px;
+    color: rgb(68, 128, 62);
+} 
+
+.excelCorrect {
+    margin-right : 45px;
+    margin-top: 130px;
+}

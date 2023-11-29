@@ -80,6 +80,15 @@ class Page1(Gtk.Grid):
         self.grid.attach(self.video, 0, 0, 1, 1)    
         self.grid.attach(self.boxButtonContainer, 1, 0, 1, 1)      
 
+        self.gridPage.attach(self.boxLabelConainter,0,0,1,1)
+        self.gridPage.attach(self.grid,0,1,1,1)
+
+        self.init_css_context()
+
+        self.add(self.gridPage)
+        
+
+    def init_css_context(self):
         # style setting 
         self.style_provider = Gtk.CssProvider()
         self.style_provider.load_from_path("./styles/page1.style.css")
@@ -106,10 +115,7 @@ class Page1(Gtk.Grid):
         contextBoxButtonContainer.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         contextBoxLabelContainer.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        self.gridPage.attach(self.boxLabelConainter,0,0,1,1)
-        self.gridPage.attach(self.grid,0,1,1,1)
-
-        self.add(self.gridPage)
+        
 
     def stop_update_Ui(self): 
         if self.timer is not None:
