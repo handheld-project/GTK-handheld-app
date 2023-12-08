@@ -34,12 +34,12 @@ class MultiPageApp(Gtk.ApplicationWindow):
         self.loadingPage = LoadingPage()
         self.splashPage = SplashPage(self.stack)
  
-        # self.stack.add_named(self.page1, "page1")
+        self.stack.add_named(self.page1, "page1")
         self.stack.add_named(self.page2, "page2")
         # self.stack.add_named(self.page3, "page3")
 
         # self.stack.add_named(self.splashPage, "splashPage")
-        # self.stack.add_named(self.loadingPage, "loadingPage")
+        self.stack.add_named(self.loadingPage, "loadingPage")
 
     def init_main_app_window(self):
         # Set the background color for the entire window
