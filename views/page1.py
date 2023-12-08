@@ -36,6 +36,7 @@ class Page1(Gtk.Grid):
         self.timer = GLib.timeout_add(100, self.update_image, self.video)
 
     def generate_interface(self):
+
         # grid page container
         self.gridPage = Gtk.Grid()
         self.gridPage.set_valign(Gtk.Align.CENTER)
@@ -46,7 +47,7 @@ class Page1(Gtk.Grid):
         
         self.video = Gtk.DrawingArea()
         # self.timer = GLib.timeout_add(100, self.update_image)
-        self.video.set_size_request(800, 600)
+        self.video.set_size_request(600, 450)
         self.reset_capture()
 
         # label init
@@ -67,7 +68,6 @@ class Page1(Gtk.Grid):
         self.boxButtonContainer = Gtk.Box() 
         self.boxButtonContainer.set_valign(Gtk.Align.CENTER)
         self.boxButtonContainer.set_halign(Gtk.Align.CENTER)
-
         self.button = CircularButton( self.stack , self.main_window , self.capture )
         
         self.boxButtonContainer.add(self.button)         
@@ -76,6 +76,7 @@ class Page1(Gtk.Grid):
         self.grid = Gtk.Grid()
         self.grid.set_valign(Gtk.Align.CENTER)
         self.grid.set_halign(Gtk.Align.CENTER)
+ 
 
         self.grid.attach(self.video, 0, 0, 1, 1)    
         self.grid.attach(self.boxButtonContainer, 1, 0, 1, 1)      
@@ -115,8 +116,6 @@ class Page1(Gtk.Grid):
         contextBoxButtonContainer.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         contextBoxLabelContainer.add_provider(self.style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        
-
     def stop_update_Ui(self): 
         if self.timer is not None:
             GLib.source_remove(self.timer)
@@ -135,7 +134,7 @@ class Page1(Gtk.Grid):
 
         if ret:
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            resized_frame = cv2.resize(frame_rgb, (800, 600))
+            resized_frame = cv2.resize(frame_rgb, (600, 450))
 
             # Convert to a format suitable for GdkPixbuf
             image_data = resized_frame.tobytes()
@@ -154,7 +153,6 @@ class Page1(Gtk.Grid):
             context.paint()
 
         return False  # Return False to stop the default draw handler
-
 
     def on_key_press(self, widget, event):
         # Check the keyval attribute of the event to get the key code
@@ -196,7 +194,3 @@ class Page1(Gtk.Grid):
                 self.button.set_capture(self.capture)
                 self.video.queue_draw()
                 
-            
-                
-
-           

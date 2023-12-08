@@ -19,13 +19,13 @@ class CircularButton(Gtk.EventBox):
         self.grid = Gtk.Grid()
 
         self.circular_area = Gtk.DrawingArea() 
-        self.circular_area.set_size_request(100, 100)
+        self.circular_area.set_size_request(70, 70)
         self.circular_area.connect("draw", self.on_draw)
         self.circular_area.set_valign(Gtk.Align.CENTER)
         self.circular_area.set_halign(Gtk.Align.CENTER)
 
         self.inner_circular_area = Gtk.DrawingArea() 
-        self.inner_circular_area.set_size_request(80, 80)
+        self.inner_circular_area.set_size_request(55, 55)
         self.inner_circular_area.connect("draw", self.on_draw_inner)
         self.inner_circular_area.set_valign(Gtk.Align.CENTER)
         self.inner_circular_area.set_halign(Gtk.Align.CENTER)

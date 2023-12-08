@@ -11,7 +11,7 @@ class MultiPageApp(Gtk.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app)
         self.processing_data = {}
-        self.set_default_size(1080, 720)
+        self.set_default_size(800, 480)
         self.connect("destroy", Gtk.main_quit)
         self.set_resizable(False)
         self.stack = Gtk.Stack()
@@ -34,12 +34,12 @@ class MultiPageApp(Gtk.ApplicationWindow):
         self.loadingPage = LoadingPage()
         self.splashPage = SplashPage(self.stack)
  
-        self.stack.add_named(self.page1, "page1")
+        # self.stack.add_named(self.page1, "page1")
         self.stack.add_named(self.page2, "page2")
-        self.stack.add_named(self.page3, "page3")
+        # self.stack.add_named(self.page3, "page3")
 
-        self.stack.add_named(self.splashPage, "splashPage")
-        self.stack.add_named(self.loadingPage, "loadingPage")
+        # self.stack.add_named(self.splashPage, "splashPage")
+        # self.stack.add_named(self.loadingPage, "loadingPage")
 
     def init_main_app_window(self):
         # Set the background color for the entire window

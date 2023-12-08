@@ -38,13 +38,20 @@ class Page2(Gtk.Grid):
         self.gridPage.set_halign(Gtk.Align.CENTER)
         self.gridPage.set_column_homogeneous(True)  # Make columns expand equall
 
+        self.leftMainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6) 
+
         # function button
+        self.buttonsBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6) 
+
         self.goBackButton = Gtk.Button("ถ่ายรูปใหม่")
-        self.goBackButton.set_size_request(60,30)
+        self.goBackButton.set_size_request(60,20)
 
         self.goNextButton = Gtk.Button("ยืนยันข้อมูล")
-        self.goBackButton.set_size_request(120,30)
+        self.goBackButton.set_size_request(120,20)
         
+        self.buttonsBox.pack_start(self.goBackButton , False , False , 0 )
+        self.buttonsBox.pack_start(self.goNextButton , False , False , 0 )
+
         #gridContents wrapper
         self.gridContentWrapper = Gtk.Grid() 
 
@@ -55,7 +62,7 @@ class Page2(Gtk.Grid):
             #Container
         self.boxImage = Gtk.Box() 
         self.image = Gtk.Image() 
-        self.image.set_size_request(720, 405)
+        self.image.set_size_request(400, 350)
 
         # Calculated Content 
         self.gridContent = Gtk.Grid()
@@ -65,7 +72,7 @@ class Page2(Gtk.Grid):
         self.gridTopContent = Gtk.Grid() 
         
         self.topContentLabel = Gtk.Label(label="ข้อมูลป้าย" ) 
-        self.topContentLabel.set_size_request(180 , 40 )
+        self.topContentLabel.set_size_request(180 , 20 )
 
         self.unit_label_w = Gtk.Label(label="ม.")
         self.unit_label_h = Gtk.Label(label="ม.")
@@ -101,16 +108,16 @@ class Page2(Gtk.Grid):
         self.radio_button2.connect("toggled", self.on_radio_button_toggled)
 
         self.area = Gtk.Label(label="พื้นที่")
-        self.area.set_size_request(80 , 40 )
+        self.area.set_size_request(80 , 20 )
         self.calculated_area = Gtk.Entry()
-        self.calculated_area.set_size_request(205 , 40 )
+        self.calculated_area.set_size_request(205 , 20 )
         self.calculated_area.set_sensitive(False)
 
         self.type = Gtk.Label(label="ชนิดป้าย") 
-        self.type.set_size_request(80 , 80 )
+        self.type.set_size_request(80 , 20 )
 
         self.calculated_type_entry = Gtk.Entry()
-        self.calculated_type_entry.set_size_request(205, 80)
+        self.calculated_type_entry.set_size_request(205, 20)
         self.calculated_type_entry.set_sensitive(False)
 
         self.dropdown_list = Gtk.ListBox()
@@ -128,9 +135,9 @@ class Page2(Gtk.Grid):
 
 
         self.taxPrice = Gtk.Label("ราคาภาษี") 
-        self.taxPrice.set_size_request(80 , 40 )
+        self.taxPrice.set_size_request(80 , 20 )
         self.calculated_taxPrice = Gtk.Entry()
-        self.calculated_taxPrice.set_size_request(205 , 40 )
+        self.calculated_taxPrice.set_size_request(205 , 20 )
         self.calculated_taxPrice.set_sensitive(False)
         
 
@@ -139,23 +146,23 @@ class Page2(Gtk.Grid):
         self.gridBottomContent = Gtk.Grid()
 
         self.latitude = Gtk.Label(label="ละติจูด")
-        self.latitude.set_size_request(80 , 40 ) 
+        self.latitude.set_size_request(80 , 20 ) 
         self.calculated_latitude = Gtk.Entry( ) 
-        self.calculated_latitude.set_size_request(205 , 40 )
+        self.calculated_latitude.set_size_request(205 , 20 )
         self.calculated_latitude.set_sensitive(False)
 
 
         self.longitude = Gtk.Label(label="ลองจิจูด") 
-        self.longitude.set_size_request(80 , 40 ) 
+        self.longitude.set_size_request(80 , 20 ) 
         self.calculated_longitude  = Gtk.Entry() 
-        self.calculated_longitude.set_size_request(205 , 40 )
+        self.calculated_longitude.set_size_request(205 , 20 )
         self.calculated_longitude.set_sensitive(False)
 
 
         self.time = Gtk.Label(label="เวลา") 
-        self.time.set_size_request(80 , 40 ) 
+        self.time.set_size_request(80 , 20 ) 
         self.calculated_time  = Gtk.Entry() 
-        self.calculated_time.set_size_request(205 , 40 )
+        self.calculated_time.set_size_request(205 , 20 )
         self.calculated_time.set_text(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         self.calculated_time.set_sensitive(False)
 
@@ -167,6 +174,9 @@ class Page2(Gtk.Grid):
         # align 
         self.gridContent.set_valign(Gtk.Align.CENTER)
         self.gridContent.set_halign(Gtk.Align.CENTER)
+        self.leftMainBox.set_valign(Gtk.Align.CENTER)
+        self.leftMainBox.set_halign(Gtk.Align.CENTER)
+        self.buttonsBox.set_halign(Gtk.Align.CENTER)
         
             # align top content
         self.width.set_halign(Gtk.Align.START)
@@ -192,11 +202,11 @@ class Page2(Gtk.Grid):
         self.calculated_latitude.set_halign(Gtk.Align.END)
         self.calculated_time.set_halign(Gtk.Align.END)
 
-        #sizing 
-        self.gridTopContent.set_size_request(275,300)
+        # #sizing 
+        # self.gridTopContent.set_size_request(275,300)
 
         self.gridPage.set_column_homogeneous(True)
-
+        
         self.gridPage.set_hexpand(True)
         self.gridContentWrapper.set_hexpand(True)
         self.gridTopContent.set_hexpand(True)        
@@ -204,7 +214,8 @@ class Page2(Gtk.Grid):
 
             # adding image box 
         self.boxImage.add(self.image)
-
+        self.leftMainBox.pack_start(self.boxImage, False, False, 0)
+        self.leftMainBox.pack_start(self.buttonsBox, False, False, 0)
             # adding top content 
             # left top width height 
 
@@ -241,7 +252,7 @@ class Page2(Gtk.Grid):
         self.gridContent.attach( self.boxBottomContent , 0 , 1 , 1 , 1 )
 
         # content wrap all
-        self.gridContentWrapper.attach(self.boxImage, 0 , 0 , 2 , 1 ) 
+        self.gridContentWrapper.attach(self.leftMainBox, 0 , 0 , 2 , 1 ) 
         self.gridContentWrapper.attach(self.gridContent, 2 , 0 , 2 , 1 ) 
 
         self.gridContentWrapper.attach( self.goBackButton ,2 ,1 ,1 ,1 )
@@ -635,7 +646,7 @@ class Page2(Gtk.Grid):
                 # setting data from processing process ! 
                 self.filename = exported_data['src_image']
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(exported_data['src_image'])
-                scaled_pixbuf = pixbuf.scale_simple(720, 405, GdkPixbuf.InterpType.BILINEAR)
+                scaled_pixbuf = pixbuf.scale_simple(400, 225, GdkPixbuf.InterpType.BILINEAR)
                 self.image.set_from_pixbuf(scaled_pixbuf)
 
 
@@ -758,7 +769,6 @@ class Page2(Gtk.Grid):
         self.max_entity_index = 5
         self.calculated_area.set_text("")
         self.calculated_taxPrice.set_text("")
-
 
         print("move able is ",self.is_moveable)
         self.init_css_context()

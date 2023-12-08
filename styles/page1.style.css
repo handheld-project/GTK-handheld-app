@@ -1,7 +1,7 @@
 .label {
     color: rgb(189, 88, 88);
-    font-size: 25px;
-    padding-bottom: 5px;
+    font-size: 22px;
+    /* padding-bottom: 5px; */
 }
 
 .grid {
@@ -10,16 +10,13 @@
     padding-right: 45px;
 } 
 
-.gridPage {
-    
+.BoxCantainer {
+    margin-left: 40px;
 }
 
-.BoxCantainer {
-    margin-left: 70px;
-    margin-right: 20px;
-}
+
 
 .labelCantainer {
-    margin-top: 15px;
-    margin-bottom: 5px;
+    /* margin-top: 15px;
+    margin-bottom: 5px; */
 }
