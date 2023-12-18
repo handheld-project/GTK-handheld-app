@@ -226,8 +226,6 @@ class Page3(Gtk.Grid):
 
 
     def on_go_back(self,widget ) : 
-        self.set_can_focus(False)
-        print("go back to page 1")
         self.stack.set_visible_child_name("page1")
 
 
