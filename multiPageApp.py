@@ -21,7 +21,20 @@ class MultiPageApp(Gtk.ApplicationWindow):
         self.loadingPage = None
         self.splashPage = None
         self.processing_data = {}
-        self.commited_document = {} 
+        self.commited_document = {
+               "width" :  "" ,
+                "height" : ""  ,
+                "is_movable" : False ,
+                "type" : "" , 
+                "area" : "" , 
+                "price" : "" ,
+                "latitude" : "" ,
+                "longitude" : "" ,
+                "time" : ""
+        } 
+        self.mapType = {1:"อักษรภาษาไทยทั้งหมด", 2:"อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น", 3:"อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย"}
+
+        # self.fullscreen()
 
         self.init_stack()
         self.init_main_app_window()
@@ -36,7 +49,7 @@ class MultiPageApp(Gtk.ApplicationWindow):
  
         self.stack.add_named(self.page1, "page1")
         self.stack.add_named(self.page2, "page2")
-        # self.stack.add_named(self.page3, "page3")
+        self.stack.add_named(self.page3, "page3")
 
         # self.stack.add_named(self.splashPage, "splashPage")
         self.stack.add_named(self.loadingPage, "loadingPage")
@@ -56,11 +69,14 @@ class MultiPageApp(Gtk.ApplicationWindow):
 
         # Schedule a callback to switch to Page1 after 3 seconds
         # GLib.timeout_add_seconds(3, self.show_page1)
-        
+    
+    def get_mapType(self): 
+        return self.mapType 
+
     def set_document(self, document):
         self.commited_document = document
 
-    def get_set_document(self):
+    def get_document(self):
         return self.commited_document
 
     def set_processing_data(self, processing_data):

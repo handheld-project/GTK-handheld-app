@@ -17,7 +17,7 @@ class Page2(Gtk.Grid):
         self.firstTypeAndPrice = { False:5 , True:10 }
         self.secondTypeAndPrice = { False:26 ,True:52 } 
         self.thridTypeAndPrice = { False:50 , True:52 }
-        self.mapType = {1:"อักษรภาษาไทยทั้งหมด", 2:"อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น", 3:"อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย"}
+        
         self.is_moveable = None
 
         self.stack = stack
@@ -680,15 +680,18 @@ class Page2(Gtk.Grid):
         print(self.is_moveable)
         if self.is_moveable or self.is_moveable is False:
             typeNumber = int(self.calculated_type_entry.get_text()[0])
+            mapType = self.main_window.get_mapType() 
+
             document = {
                 "width" : "{:.4f}".format(self.calculated_width.get_value())  ,
-                "height" : self.calculated_height.get_value()  ,
+                "height" : "{:.4f}".format(self.calculated_height.get_value()) ,
                 "is_movable" : self.is_moveable ,
-                "type" : self.mapType[typeNumber] , 
+                "type" : mapType[typeNumber] , 
                 "area" : self.calculated_area.get_text() , 
                 "price" : self.calculated_taxPrice.get_text() ,
                 "latitude" : self.calculated_latitude.get_text() ,
-                "longitude" : self.calculated_longitude.get_text()
+                "longitude" : self.calculated_longitude.get_text() ,
+                "time" : self.calculated_time.get_text()
             }
             print(document)
             self.main_window.set_document(document)

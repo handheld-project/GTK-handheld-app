@@ -162,7 +162,7 @@ class Page1(Gtk.Grid):
         print(f"Key pressed: {keyval}")
         
         # press enter / confrim button 
-        if(keyval == 65293) : 
+        if(keyval == 122) : 
             self.button.emit("button-press-event", None)
         
         # changew when every thing is work 

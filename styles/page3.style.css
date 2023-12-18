@@ -5,14 +5,14 @@
 }
 
 .labelName{
-    margin-top: 14px;
-    font-size: 14px;
+    margin-top: 4px;
+    font-size: 12px;
 } 
 
 .gridContentWrapper {
     background-color: rgb(28,28,28); 
-    padding-top:40px;
-    padding-bottom:40px;
+    padding-top:48px;
+    padding-bottom:48px;
 }
 
 .boxTopContent {
@@ -24,7 +24,7 @@
 }
 
 .boxBottomContent{
-    margin-top : 20px ;
+    margin-top : 8px ;
     background-color: rgb(197, 197, 197);
     border-radius: 15px;
     padding: 10px;
@@ -33,131 +33,84 @@
 }
 
 .calculatedBox{
+    min-height: 0px;
     background-color: rgb(255, 255, 255);
     border:3px solid rgb(255, 255, 255);
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 5px;
-}
-
-.blue-border{
-    background-color: rgb(255, 255, 255);
-    border:3px solid rgb(50, 129, 231);
-    border-radius: 5px;
-    margin-top: 10px;
-    margin-left: 5px;
-}
-
-.orange-border {
-    background-color: rgb(255, 255, 255);
-    border:3px solid rgb(206, 133, 50);
-    border-radius: 5px;
-    margin-top: 10px;
-    margin-left: 5px;
+    font-size: 14px;
 }
 
 .unitLabel {
-    margin-top: 10px;
-    margin-right:65px
+    margin-top: 5px;
+    margin-left: 145px;
+    font-size: 12px;
 }
 
 .unitAreaLabel {
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 145px;
+    font-size: 12px;
 }
 
 .radio {
+    font-size: 12px;
     border:3px solid transparent;
     border-radius: 5px;
     margin-top: 2px;
-}
-
-.radioSelected{
-    border:3px solid rgb(50, 129, 231);
-    border-radius: 5px;
-    margin-top: 2px;
-}
-
-.goBackButton{
-    margin-top: 10px;
-    border:3px solid transparent;
-    border-radius: 15px;
-    background: rgba(211, 129, 129,1);
-    color: whitesmoke;
-}
-
-.goBackButtonSelect{
-    margin-top: 10px;
-    border:3px solid rgb(192, 192, 192);
-    border-radius: 15px;
-    background: rgba(155, 97, 97,1);
-    color: whitesmoke;
-}
-
-.goNextButtonDisable{
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 20px ; 
-    border:3px solid transparent;
-    border-radius: 15px;
-    background: rgb(136, 136, 136);
-    color: whitesmoke;
-}
-
-.goNextButton{
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 20px ; 
-    border:3px solid transparent;
-    border-radius: 15px;
-    background: rgb(85, 156, 83);
-    color: whitesmoke;
-}
-
-.goNextButtonSelect{
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 20px ; 
-    border:3px solid rgb(192, 192, 192);
-    border-radius: 15px;
-    background: rgb(59, 109, 56);
-    color: whitesmoke;
-}
-
-.dropdownList {
-    margin-top: 180px;
-    margin-right: 20px;
-    border:3px solid rgb(192, 192, 192);
-    border-radius: 10px;
 }
 
 .boxExcel {
-    background-color:  rgb(235, 235, 235);
-    border:3px solid rgb(235, 235, 235);
+    background-color:  rgb(219, 219, 219);
+    border:3px solid rgb(219, 219, 219);
     border-radius: 15px;
-    margin-right: 40px;
-    margin-bottom: 285px;
-    margin-top: 215px;
+    /* padding: 30px; */
+
+    margin-right: -20px;
+    margin-bottom: 170px;
+    margin-top: 160px;
 }
 
 .excelImage {
-    margin-right : 45px;
-    margin-bottom: 120px;
+    /* margin-right : 45px; */
+    /* margin-bottom: 120px; */
+    margin-top: -50px;
+    margin-right: -20px;
+
 }
 
 .excelLabel {
-    margin-right : 45px;
-    font-size: 16px;
+    /* margin-right : 45px; */
+    margin-top: 35px;
+    font-size: 12px;
+    margin-right: -20px;
+
 } 
 
 .excelLabel2 {
-    margin-right : 40px;
-    margin-top: 45px ; 
-    font-size: 18px;
+    /* margin-right : 40px; */
+    margin-top: 65px ; 
+    font-size: 14px;
     color: rgb(68, 128, 62);
+    margin-right: -20px;
+
 } 
 
 .excelCorrect {
-    margin-right : 45px;
-    margin-top: 130px;
+    /* margin-right : 45px; */
+    margin-right: -20px;
+    margin-top: 120px;
+
+}
+
+.goBackButton{
+    margin-right: -20px;
+    margin-top: 400px;
+    margin-bottom : 10px;
+    border:4px solid rgb(66, 116, 224);
+    border-radius: 15px;
+    background: rgb(241, 241, 241);
+    color: rgb(19, 19, 19);
+    font-size: 14px
 }
