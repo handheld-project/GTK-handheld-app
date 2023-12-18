@@ -5,6 +5,7 @@ import cv2
 import datetime
 import threading
 import time
+import os 
 
 class CircularButton(Gtk.EventBox):
     def __init__(self , stack , main_window , capture ):
@@ -85,6 +86,12 @@ class CircularButton(Gtk.EventBox):
         self.clicked = True 
    
         ret, frame = self.capture.read()
+
+        if os.path.exists("./temp") and os.path.isdir("./temp") : 
+            pass 
+        else :
+            os.makedirs("./temp")
+
         if ret:
             current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             temp_filename = f"./temp/{current_datetime}.png"
@@ -93,8 +100,6 @@ class CircularButton(Gtk.EventBox):
             print(f"Image saved to: {temp_filename}")
         
         self.capture.release()
-        
-
         widget.queue_draw()
 
         # Continue with other processing or thread creation as needed
