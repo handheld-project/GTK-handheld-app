@@ -421,7 +421,17 @@ class Page3(Gtk.Grid):
     def on_stack_visible_child_changed(self , stack, param_spec):
         visible_child_name = self.stack.get_visible_child_name()
         if visible_child_name == "page3": 
+            exported_data = self.main_window.get_processing_data()
+
+            if exported_data :     
+                self.filename = exported_data['src_image']
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(exported_data['src_image'])
+                scaled_pixbuf = pixbuf.scale_simple(300, 168.75, GdkPixbuf.InterpType.BILINEAR)
+                self.image.set_from_pixbuf(scaled_pixbuf)
+            
             self.grab_focus() 
             self.set_document_data()
+            
+
             # self.change_page()
             

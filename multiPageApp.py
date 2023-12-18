@@ -20,7 +20,16 @@ class MultiPageApp(Gtk.ApplicationWindow):
         self.page3 = None
         self.loadingPage = None
         self.splashPage = None
-        self.processing_data = {}
+
+        self.processing_data = {
+            "src_image" : "" ,
+            "top_left" : None ,
+            "top_right" : None ,
+            "bottom_left": None ,
+            "bottom_right": None , 
+            "detected_type":  0 
+
+        }
         self.commited_document = {
                "width" :  "" ,
                 "height" : ""  ,
@@ -34,7 +43,7 @@ class MultiPageApp(Gtk.ApplicationWindow):
         } 
         self.mapType = {1:"อักษรภาษาไทยทั้งหมด", 2:"อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น", 3:"อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย"}
 
-        # self.fullscreen()
+        self.fullscreen()
 
         self.init_stack()
         self.init_main_app_window()
