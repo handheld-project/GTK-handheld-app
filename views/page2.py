@@ -34,8 +34,8 @@ class Page2(Gtk.Grid):
 
         # gridPage
         self.gridPage = Gtk.Grid() 
-        self.gridPage.set_valign(Gtk.Align.CENTER)
-        self.gridPage.set_halign(Gtk.Align.CENTER)
+        self.gridPage.set_valign(Gtk.Align.START)
+        self.gridPage.set_halign(Gtk.Align.START)
         self.gridPage.set_column_homogeneous(True)  # Make columns expand equall
 
         self.leftMainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6) 
@@ -62,7 +62,7 @@ class Page2(Gtk.Grid):
             #Container
         self.boxImage = Gtk.Box() 
         self.image = Gtk.Image() 
-        self.image.set_size_request(400, 350)
+        self.image.set_size_request(400, 225)
 
         # Calculated Content 
         self.gridContent = Gtk.Grid()
@@ -177,7 +177,9 @@ class Page2(Gtk.Grid):
         self.leftMainBox.set_valign(Gtk.Align.CENTER)
         self.leftMainBox.set_halign(Gtk.Align.CENTER)
         self.buttonsBox.set_halign(Gtk.Align.CENTER)
-        
+        self.gridContentWrapper.set_valign(Gtk.Align.START)
+        self.gridContentWrapper.set_halign(Gtk.Align.START)
+
             # align top content
         self.width.set_halign(Gtk.Align.START)
         self.height.set_halign(Gtk.Align.START)
@@ -205,7 +207,7 @@ class Page2(Gtk.Grid):
         # #sizing 
         # self.gridTopContent.set_size_request(275,300)
 
-        self.gridPage.set_column_homogeneous(True)
+        # self.gridPage.set_column_homogeneous(True)
         
         self.gridPage.set_hexpand(True)
         self.gridContentWrapper.set_hexpand(True)
@@ -252,8 +254,8 @@ class Page2(Gtk.Grid):
         self.gridContent.attach( self.boxBottomContent , 0 , 1 , 1 , 1 )
 
         # content wrap all
-        self.gridContentWrapper.attach(self.leftMainBox, 0 , 0 , 2 , 1 ) 
-        self.gridContentWrapper.attach(self.gridContent, 2 , 0 , 2 , 1 ) 
+        self.gridContentWrapper.attach(self.leftMainBox, 0 , 0 , 1 , 1 ) 
+        self.gridContentWrapper.attach(self.gridContent, 1 , 0 , 1 , 1 ) 
 
         self.gridContentWrapper.attach( self.goBackButton ,2 ,1 ,1 ,1 )
         self.gridContentWrapper.attach( self.goNextButton ,3 ,1 ,1 ,1 )

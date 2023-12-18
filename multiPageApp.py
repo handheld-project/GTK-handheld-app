@@ -43,7 +43,6 @@ class MultiPageApp(Gtk.ApplicationWindow):
         } 
         self.mapType = {1:"อักษรภาษาไทยทั้งหมด", 2:"อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น", 3:"อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย"}
 
-        self.fullscreen()
 
         self.init_stack()
         self.init_main_app_window()
@@ -75,6 +74,8 @@ class MultiPageApp(Gtk.ApplicationWindow):
         screen = Gdk.Screen.get_default()
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+        # self.fullscreen()
 
         # Schedule a callback to switch to Page1 after 3 seconds
         # GLib.timeout_add_seconds(3, self.show_page1)
