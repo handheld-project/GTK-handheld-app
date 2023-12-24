@@ -43,7 +43,6 @@ class MultiPageApp(Gtk.ApplicationWindow):
         } 
         self.mapType = {1:"อักษรภาษาไทยทั้งหมด", 2:"อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น", 3:"อักษาไทยอยู่ต่ำกว่าอักษรต่างประเทศ/ไม่มีอักษรไทยเลย"}
 
-
         self.init_stack()
         self.init_main_app_window()
 

@@ -2,8 +2,9 @@
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib,Pango
-import datetime
+from datetime import datetime
 import os
+from business.csvFileMaker import CsvFileMaker
 
 # อักษรภาษาไทยทั้งหมด
 # อักษรภาษาไทยปนกับภาษาต่างประเทศ/ภาพ/เครื่องหมายอื่น
@@ -14,6 +15,10 @@ class Page2(Gtk.Grid):
 
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         # type price formular
+        
+        self.csvFileMaker = CsvFileMaker()
+
+        self.exported_data = {}
         self.firstTypeAndPrice = { False:5 , True:10 }
         self.secondTypeAndPrice = { False:26 ,True:52 } 
         self.thridTypeAndPrice = { False:50 , True:52 }
@@ -163,7 +168,6 @@ class Page2(Gtk.Grid):
         self.time.set_size_request(80 , 20 ) 
         self.calculated_time  = Gtk.Entry() 
         self.calculated_time.set_size_request(205 , 20 )
-        self.calculated_time.set_text(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         self.calculated_time.set_sensitive(False)
 
 
@@ -634,20 +638,23 @@ class Page2(Gtk.Grid):
 
     # stack page change handler 
     def on_stack_visible_child_changed(self , stack, param_spec):
+        
         visible_child_name = self.stack.get_visible_child_name()
+
         if visible_child_name == "page2":
             self.main_window.page1.stop_update_Ui()
+
             # reseting data and UI
+            self.exported_data = self.main_window.get_processing_data()
             self.dropdown_list.hide()
             self.grab_focus()
             self.reset_page()
-            exported_data = self.main_window.get_processing_data()
             self.set_data()
 
-            if exported_data:
+            if self.exported_data:
                 # setting data from processing process ! 
-                self.filename = exported_data['src_image']
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file(exported_data['src_image'])
+                self.filename = self.exported_data['src_image']
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.exported_data['src_image'])
                 scaled_pixbuf = pixbuf.scale_simple(400, 225, GdkPixbuf.InterpType.BILINEAR)
                 self.image.set_from_pixbuf(scaled_pixbuf)
 
@@ -697,6 +704,7 @@ class Page2(Gtk.Grid):
             }
             print(document)
             self.main_window.set_document(document)
+            self.csvFileMaker.update_excel(document , self.exported_data['src_image'] )
 
             self.stack.set_visible_child_name("page3")
 
@@ -708,6 +716,7 @@ class Page2(Gtk.Grid):
 
 
     def set_data(self): 
+        self.calculated_time.set_text(datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         # from image model
         self.set_dropdown_data()
         # from hardware 
@@ -774,7 +783,9 @@ class Page2(Gtk.Grid):
         self.max_entity_index = 5
         self.calculated_area.set_text("")
         self.calculated_taxPrice.set_text("")
-
-        print("move able is ",self.is_moveable)
         self.init_css_context()
         
+        self.goNextButton.get_style_context().remove_class("goNextButtonSelect")        
+        self.goNextButton.get_style_context().remove_class("goNextButton")        
+        self.goNextButton.get_style_context().add_class("goNextButtonDisable")        
+

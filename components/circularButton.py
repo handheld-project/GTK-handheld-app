@@ -78,13 +78,24 @@ class CircularButton(Gtk.EventBox):
     
 
     def on_button_press(self, widget, event ):
-        print("button",self.capture)
+        
+        self.clicked = True 
+        widget.queue_draw()
+
+
+        # focus camera 
+
+        # Continue with other processing or thread creation as needed
+        
+
+    def on_button_release(self, widget , event )  :
+        
+        self.clicked = False
+        widget.queue_draw()
 
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         
-        self.clicked = True 
-   
         ret, frame = self.capture.read()
 
         if os.path.exists("./temp") and os.path.isdir("./temp") : 
@@ -98,19 +109,15 @@ class CircularButton(Gtk.EventBox):
             self.export_data['src_image'] = temp_filename
             cv2.imwrite(temp_filename, frame)
             print(f"Image saved to: {temp_filename}")
-        
-        self.capture.release()
-        widget.queue_draw()
 
-        # Continue with other processing or thread creation as needed
+
+        self.capture.release()
+        
+        GLib.idle_add(self.show_loading_page)
+
         processing_thread = threading.Thread(target=self.process_image)
         processing_thread.start()
-
-    def on_button_release(self, widget , event )  :
-        self.clicked = False
-        widget.queue_draw()
         # Set the loading page visible after the processing thread completes
-        GLib.idle_add(self.show_loading_page)
     
     def show_loading_page(self):
         self.stack.set_visible_child_name("loadingPage")

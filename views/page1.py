@@ -33,6 +33,7 @@ class Page1(Gtk.Grid):
         self.video.connect("draw", self.on_draw)
         self.stack.connect("notify::visible-child-name", self.on_stack_visible_child_changed)
         self.connect("key-press-event", self.on_key_press)
+        self.connect("key-release-event", self.on_key_release )
         self.timer = GLib.timeout_add(100, self.update_image, self.video)
 
     def generate_interface(self):
@@ -168,6 +169,11 @@ class Page1(Gtk.Grid):
         # changew when every thing is work 
         return True
     
+    def on_key_release(self, widget , event) : 
+        self.button.emit("button-release-event", None)
+    
+        print("the key is release") 
+
     def set_capture(self ): 
         self.capture = cv2.VideoCapture(0)
 
